@@ -95,28 +95,6 @@ class JobVacancyController extends Controller
         return redirect()->route('job-applications.index', $id)->with('success', 'Application submitted successfully');
     }
 
-
-
-
-// public function testOpenAI(): void
-// {
-//     $result = OpenAI::chat()->create(parameters: [
-//         'model' => 'gpt-4o',
-//         'messages' => [
-//             [
-//                 'role'    => 'system',
-//                 'content' => 'You are an HR manager.',
-//             ],
-//             [
-//                 'role'    => 'user',
-//                 'content' => 'Hello!',
-//             ],
-//         ],
-//     ]);
-
-//     echo $result->choices[0]->message->content; // Example output: "Hello! How can I assist you today?
-// }
-
  
     public function toggleSave(string $id)
     {

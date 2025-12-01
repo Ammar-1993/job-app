@@ -21,14 +21,6 @@ Route::middleware(['auth', 'role:job_seeker'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/job-vacancies/{id}/save', [JobVacancyController::class, 'toggleSave'])->name('job-vacancies.save');
 
-
-
-    // TEST OPEN AI
-    // Route::get(uri: '/test-openai', action: [JobVacancyController::class, 'testOpenAI'])->name(name: 'test-openai');
-
-
-
-
 });
 
 require __DIR__ . '/auth.php';

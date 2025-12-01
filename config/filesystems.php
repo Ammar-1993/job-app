@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -56,6 +56,11 @@ return [
             'url' => env('LARAVEL_CLOUD_URL'),
             'endpoint' => env('LARAVEL_CLOUD_ENDPOINT'),
             'use_path_style_endpoint' => env('LARAVEL_CLOUD_USE_PATH_STYLE_ENDPOINT', false),
+
+            // 'visibility' => 'public',
+            //  'throw' => true,
+            // 'report' => true,
+
             'throw' => false,
             'report' => false,
         ],
