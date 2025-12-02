@@ -41,10 +41,18 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
+        ],
+
+        // 🔥 إضافة جديدة: ديسك خاص ومحمي للسير الذاتية
+        'resumes' => [
+            'driver' => 'local',
+            'root' => storage_path('app/resumes'), // هذا المجلد غير مرتبط بالـ public
+            'visibility' => 'private', // لن يتمكن أحد من الوصول إليه عبر رابط مباشر
+            'throw' => false,
         ],
 
         'cloud' => [
@@ -56,11 +64,6 @@ return [
             'url' => env('LARAVEL_CLOUD_URL'),
             'endpoint' => env('LARAVEL_CLOUD_ENDPOINT'),
             'use_path_style_endpoint' => env('LARAVEL_CLOUD_USE_PATH_STYLE_ENDPOINT', false),
-
-            // 'visibility' => 'public',
-            //  'throw' => true,
-            // 'report' => true,
-
             'throw' => false,
             'report' => false,
         ],
@@ -83,3 +86,25 @@ return [
     ],
 
 ];
+```
+
+### 🛠️ كيف تستخدم هذا التعديل في الكود؟
+
+عند رفع الملف في الـ Controller (`JobApplicationsController`)، استخدم الديسك الجديد بدلاً من `public`:
+
+**السابق (غير آمن):**
+```php
+$path = $file->store('resumes', 'public');
+```
+
+**الجديد (الآمن):**
+```php
+// سيتم التخزين في storage/app/resumes/
+$path = $file->store('/', 'resumes'); 
+```
+
+**كيف تعرض الملف للمدير؟**
+بما أنه ملف خاص، لا يمكنك وضع رابط مباشر `href`. يجب عمل Route خاص يقوم بتحميل الملف (Download Response):
+
+```php
+return Storage::disk('resumes')->download($resume->fileUrl);
