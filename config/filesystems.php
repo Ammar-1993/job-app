@@ -57,10 +57,7 @@ return [
             'endpoint' => env('LARAVEL_CLOUD_ENDPOINT'),
             'use_path_style_endpoint' => env('LARAVEL_CLOUD_USE_PATH_STYLE_ENDPOINT', false),
 
-            // 'visibility' => 'public',
-            //  'throw' => true,
-            // 'report' => true,
-
+            'visibility' => 'public',
             'throw' => false,
             'report' => false,
         ],
