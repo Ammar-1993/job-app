@@ -39,6 +39,8 @@ return [
         'processing' => 'Processing Application...',
         'analyzing' => 'Analyzing your resume matches with AI...',
         'salary_year' => '/ Year',
+        'connection_error' => 'No Internet Connection',
+        'connection_error_desc' => 'Please check your internet connection and try again.',
     ],
     'profile' => [
         'settings' => 'Profile Settings',

@@ -14,6 +14,7 @@
     -->
     <div class="py-12" x-data="{ 
         isProcessing: {{ $errors->any() ? 'false' : 'false' }}, 
+        showConnectionError: false,
         feedbackMessage: '{{ __('app.job.analyzing') }}' 
     }">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,7 +56,16 @@
                 <!-- Form -->
                 <!-- Use @submit to set isProcessing = true and allow normal form submission -->
                 <form action="{{ route('job-vacancies.process-application', $jobVacancy->id) }}" method="POST"
-                    enctype="multipart/form-data" class="space-y-10" @submit="isProcessing = true">
+                    enctype="multipart/form-data" class="space-y-10" 
+                    @submit="
+                        if (!navigator.onLine) {
+                            $event.preventDefault();
+                            showConnectionError = true;
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            return;
+                        }
+                        isProcessing = true;
+                    ">
                     @csrf
 
                     <!-- Error Messages -->
@@ -69,6 +79,14 @@
                             </ul>
                         </div>
                     @endif
+
+                    <!-- Connection Error Message -->
+                    <div x-show="showConnectionError" x-transition 
+                        class="bg-red-900/50 border border-red-600 text-red-100 p-4 rounded-xl shadow-lg" 
+                        style="display: none;">
+                        <p class="font-bold mb-1">{{ __('app.job.connection_error') }}</p>
+                        <p class="text-sm">{{ __('app.job.connection_error_desc') }}</p>
+                    </div>
 
 
                     <!-- Resume Selection Section -->
