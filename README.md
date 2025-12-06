@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Job Application Platform Interface](/root/.gemini/antigravity/brain/6bc70a5e-69d1-4f0a-a01b-289b6a7676b2/job_app_mockup_1764978848937.png)
+![Job Application Platform Interface](./docs/assets/01_landing_page.png)
 
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
@@ -59,12 +59,47 @@ This platform offers a user-centric set of tools for candidates:
 
 The interface is designed with a focus on **accessibility** and **modern aesthetics**.
 
-> *Note: The screenshot above is a conceptual mockup. The actual interface may vary slightly as the project evolves.*
+### 1. The Gateway to Opportunities
+**Landing Page**  
+A visually striking and clean entry point that invites users to explore their career potential. It features a bold "Find your Dream Job" headline and intuitive navigation, setting a professional tone from the first interaction.  
+![Landing Page](./docs/assets/01_landing_page.png)
 
-### Main Job Portal
-- **Hero Search**: Prominent search bar for instant access to jobs.
-- **Job Cards**: Clear, consistent display of job details and company branding.
-- **Instant Apply**: Quick access to application forms directly from the listing.
+### 2. Seamless Onboarding
+**Login & Registration**  
+Minimalist, distraction-free forms for user entry. The design focuses on ease of use with clearly labeled fields for account creation and secure login, ensuring a smooth onboarding experience for new candidates.  
+<div align="center">
+  <img src="./docs/assets/02_login_page.png" width="48%" alt="Login Page">
+  <img src="./docs/assets/03_register_page.png" width="48%" alt="Register Page">
+</div>
+
+### 3. Personal Control Center
+**Candidate Dashboard**  
+A robust hub for job seekers to manage their activities. It provides an immediate overview of total jobs, saved positions, and application status, all presented through elegant summary cards and a searchable job list.  
+![Candidate Dashboard](./docs/assets/04_candidate_dashboard.png)
+
+### 4. Deep Dive into Opportunities
+**Job Vacancy Details**  
+A dedicated page providing comprehensive information about a position. It features a clean layout with salary details, company info, and requirements, helping candidates make informed decisions.  
+![Job Details](./docs/assets/05_job_vacancy_details.png)
+
+### 5. Streamlined Application Process
+**Apply, Review, Success**  
+The application flow is broken down into intuitive steps. Starting with a clear form for personal details and resume upload, followed by a review state, and concluding with a reassuring success message. This ensures candidates feel confident at every step.  
+<div align="center">
+  <img src="./docs/assets/06_application_form.png" width="32%" alt="Application Step 1">
+  <img src="./docs/assets/07_application_filled.png" width="32%" alt="Application Step 2">
+  <img src="./docs/assets/08_application_success.png" width="32%" alt="Success Message">
+</div>
+
+### 6. Activity Tracking
+**My Applications**  
+A dedicated view for candidates to track the status of their submitted applications. The clear table layout allows for quick status checks (e.g., Pending, Interview) and reviewing past submissions.  
+![My Applications](./docs/assets/09_my_applications.png)
+
+### 7. User Management
+**Profile Settings**  
+A secure area for users to update their personal information and credentials. The clean form design ensures that maintaining profile accuracy is quick and hassle-free.  
+![User Profile](./docs/assets/10_user_profile.png)
 
 ---
 
