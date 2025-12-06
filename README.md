@@ -201,6 +201,7 @@ We chose this stack for its **reliability**, **performance**, and **innovation**
 | **Alpine.js** | Lightweight JavaScript framework for interactive frontend components. |
 | **OpenAI API** | AI-powered resume parsing and analysis. |
 | **Spatie PDF-to-Text** | Efficient extraction of text from uploaded documents. |
+| **Job Shared** | Custom library used to centralize Models and Enums across the platform. |
 | **Vite** | Next-generation frontend tooling for fast builds. |
 
 ---
