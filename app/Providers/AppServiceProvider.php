@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // هذا الشرط يضمن أن يتم إجبار HTTPS فقط عند الرفع على السيرفر
+        // ويحافظ على عمل المشروع محلياً بدون مشاكل
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }
