@@ -12,7 +12,7 @@
 </div>
 
 
-- [Live Demo](https://job-app-mbe9k.ondigitalocean.app/)
+- [Live Demo](https://ammar-jobs.duckdns.org/)
 
 ---
 
