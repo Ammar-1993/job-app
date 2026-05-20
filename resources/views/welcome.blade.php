@@ -30,7 +30,6 @@
             x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
             <a href="{{ route('register') }}" class="rounded-lg bg-white/10 px-4 py-2 text-white">{{ __('app.welcome.create_account') }}</a>
             <a href="{{ route('login') }}" class="rounded-lg bg-gradient-to-r from-indigo-500 to-rose-500 px-4 py-2 text-white">{{ __('app.welcome.login') }}</a>
-            <h1>تجربة التحديث اليدوي الأولى!</h1>
         </div>
     </div>
 </x-main-layout>
