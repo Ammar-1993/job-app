@@ -12,7 +12,7 @@
                 
                 <!-- Welcome Section -->
                 <h3 class="text-white text-3xl font-extrabold mb-8 border-b border-indigo-500/50 pb-4">
-                    👋 {{ __('app.dashboard.welcome_back') }} <span class="text-indigo-400">{{ Auth::user()->name }}</span>!
+                     {{ __('app.dashboard.welcome_back') }} <span class="text-indigo-400">{{ Auth::user()->name }}</span>!
                 </h3>
 
                 <!-- Stats Overview Section -->
