@@ -1,4 +1,4 @@
-# Job Vacancies Platform (Job App)
+# Job Vacancies Platform (Job App) Frontend
 
 <div align="center">
 
