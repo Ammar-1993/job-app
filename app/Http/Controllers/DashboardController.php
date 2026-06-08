@@ -44,6 +44,10 @@ class DashboardController extends Controller
         $newJobsTodayCount = JobVacancy::whereDate('created_at', Carbon::today())->count();
         $savedJobsCount = auth()->user()->savedJobs()->count();
 
+        if ($request->ajax()) {
+            return view('job-vacancies._list', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount'))->render();
+        }
+
         return view('dashboard', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount'));
     }
 }
