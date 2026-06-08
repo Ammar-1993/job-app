@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      :class="{ 'dark': darkMode }">
 
 <head>
     <meta charset="utf-8">
@@ -16,13 +19,13 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased bg-black text-white">
-    <div class="min-h-screen bg-zinc-900">
+<body class="font-sans antialiased bg-gray-50 text-gray-900 dark:bg-black dark:text-white transition-colors duration-300">
+    <div class="min-h-screen bg-white dark:bg-zinc-900 transition-colors duration-300">
         @include('layouts.navigation')
 
         <!-- Page Heading -->
         @isset($header)
-            <header class="bg-black shadow">
+            <header class="bg-white dark:bg-black shadow-sm dark:shadow-none border-b border-gray-200 dark:border-zinc-800 transition-colors duration-300">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
