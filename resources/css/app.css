@@ -88,7 +88,7 @@
 
 /* --- Glassmorphism Utilities --- */
 .glass-panel {
-    @apply bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 shadow-xl dark:shadow-3xl transition-all duration-300;
+    @apply bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 shadow-xl dark:shadow-2xl transition-all duration-300;
 }
 
 .glass-input {
