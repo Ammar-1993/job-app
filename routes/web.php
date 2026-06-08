@@ -15,6 +15,7 @@ Route::middleware(['auth', 'role:job_seeker'])->group(function () {
     Route::get('/job-applications', [JobApplicationsController::class, 'index'])->name('job-applications.index');
     Route::get('/job-vacancies/{id}', [JobVacancyController::class, 'show'])->name('job-vacancies.show');
     Route::get('/job-vacancies/{id}/apply', [JobVacancyController::class, 'apply'])->name('job-vacancies.apply');
+    Route::post('/job-vacancies/{id}/preview-resume', [JobVacancyController::class, 'previewResume'])->name('job-vacancies.preview-resume');
     Route::post('/job-vacancies/{id}/apply', [JobVacancyController::class, 'processApplication'])->name('job-vacancies.process-application');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

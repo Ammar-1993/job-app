@@ -6,18 +6,83 @@
     </x-slot>
 
     <div class="py-fluid-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-300" x-data="{ 
-        isProcessing: {{ $errors->any() ? 'false' : 'false' }}, 
+        step: 1,
+        resumeData: null,
+        finalResumeId: null,
+        isProcessing: false, 
         showConnectionError: false,
-        feedbackMessage: '{{ __('app.job.analyzing') }}' 
+        feedbackMessage: '{{ __('app.job.analyzing') }}',
+        previewResume() {
+            this.isProcessing = true;
+            this.feedbackMessage = 'Extracting resume insights...';
+            
+            let formData = new FormData(this.$refs.form);
+            fetch('{{ route('job-vacancies.preview-resume', $jobVacancy->id) }}', {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.isProcessing = false;
+                if (data.success) {
+                    this.resumeData = data.extracted;
+                    this.finalResumeId = data.resume_id;
+                    this.step = 2;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    alert(data.message || 'Error parsing resume');
+                }
+            })
+            .catch(err => {
+                this.isProcessing = false;
+                this.showConnectionError = true;
+            });
+        },
+        submitFinal() {
+            this.isProcessing = true;
+            this.feedbackMessage = 'Evaluating job fit and calculating score...';
+            
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('resume_option', this.finalResumeId);
+            
+            fetch('{{ route('job-vacancies.process-application', $jobVacancy->id) }}', {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    this.isProcessing = false;
+                    alert(data.message || 'Error submitting application');
+                }
+            })
+            .catch(err => {
+                this.isProcessing = false;
+                this.showConnectionError = true;
+            });
+        }
     }">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <!-- Back Link -->
             <a href="{{ route('job-vacancies.show', $jobVacancy->id) }}"
-                class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition duration-150 inline-flex items-center mb-fluid-8 text-fluid-sm">
+                class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition duration-150 inline-flex items-center mb-fluid-8 text-fluid-sm"
+                x-show="step === 1">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 {{ __('app.job.back_to_details') }}
             </a>
+            
+            <button @click="step = 1; resumeData = null;" type="button"
+                class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition duration-150 inline-flex items-center mb-fluid-8 text-fluid-sm"
+                x-show="step === 2" style="display: none;">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Resume Selection
+            </button>
 
             <!-- Application Card -->
             <div class="bg-white dark:bg-gray-800 shadow-xl dark:shadow-3xl rounded-2xl p-fluid-8 border border-gray-200 dark:border-indigo-700/30 transition-colors duration-300">
@@ -44,30 +109,20 @@
                 </div>
 
                 <!-- Form -->
-                <form action="{{ route('job-vacancies.process-application', $jobVacancy->id) }}" method="POST"
-                    enctype="multipart/form-data" class="space-y-fluid-10" 
-                    @submit="
+                <form x-ref="form" class="space-y-fluid-10" 
+                    @submit.prevent="
                         if (!navigator.onLine) {
-                            $event.preventDefault();
                             showConnectionError = true;
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                             return;
                         }
-                        isProcessing = true;
+                        if (step === 1) {
+                            previewResume();
+                        } else {
+                            submitFinal();
+                        }
                     ">
                     @csrf
-
-                    <!-- Error Messages -->
-                    @if ($errors->any())
-                        <div class="bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-600 text-red-700 dark:text-red-100 p-6 rounded-2xl shadow-lg">
-                            <p class="font-bold mb-2">Please Select or Upload Your Resume:</p>
-                            <ul class="list-disc list-inside text-fluid-sm">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
 
                     <!-- Connection Error Message -->
                     <div x-show="showConnectionError" x-transition 
@@ -78,8 +133,8 @@
                     </div>
 
 
-                    <!-- Resume Selection Section -->
-                    <div class="space-y-fluid-6">
+                    <!-- STEP 1: Resume Selection -->
+                    <div x-show="step === 1" x-transition:enter="transition ease-out duration-300 delay-150" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="space-y-fluid-6">
                         <h3 class="text-fluid-xl font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 uppercase tracking-wide">{{ __('app.job.select_resume') }}</h3>
 
                         <!-- Existing Resumes -->
@@ -114,7 +169,7 @@
                         <!-- Upload New Resume -->
                         <div x-data="{ 
                             fileName: '', 
-                            hasError: {{ $errors->has('resume_file') ? 'true' : 'false' }},
+                            hasError: false,
                             errorMessage: ''
                         }">
                             <div class="flex items-center mb-fluid-4">
@@ -177,9 +232,47 @@
                         </div>
                     </div>
 
+                    <!-- STEP 2: Resume Visualization / Preview -->
+                    <div x-show="step === 2" x-transition:enter="transition ease-out duration-500 delay-150" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;" class="space-y-fluid-8">
+                        <div class="bg-gradient-to-r from-brand-600/10 to-accent-600/10 dark:from-brand-900/30 dark:to-accent-900/30 border border-brand-200 dark:border-brand-800 rounded-3xl p-fluid-8 shadow-inner">
+                            <div class="flex items-center gap-4 mb-fluid-6">
+                                <div class="bg-brand-500 text-white p-3 rounded-2xl shadow-md">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-fluid-xl font-black text-gray-900 dark:text-white">AI Extraction Successful</h3>
+                                    <p class="text-fluid-sm text-gray-600 dark:text-gray-400">Review your parsed details before final submission.</p>
+                                </div>
+                            </div>
+                            
+                            <template x-if="resumeData">
+                                <div class="space-y-fluid-6">
+                                    <!-- Summary -->
+                                    <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-fluid-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
+                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Professional Summary</h4>
+                                        <p class="text-gray-800 dark:text-gray-200 text-fluid-base leading-relaxed" x-text="resumeData.summary || 'No summary extracted.'"></p>
+                                    </div>
+                                    
+                                    <!-- Skills Grid -->
+                                    <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-fluid-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
+                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Extracted Skills</h4>
+                                        <div class="flex flex-wrap gap-3">
+                                            <template x-for="skill in (resumeData.skills || [])">
+                                                <span class="px-4 py-2 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 rounded-xl text-fluid-sm font-bold border border-brand-100 dark:border-brand-800/50 shadow-sm transition-transform hover:-translate-y-1 cursor-default" x-text="skill"></span>
+                                            </template>
+                                            <template x-if="!(resumeData.skills && resumeData.skills.length)">
+                                                <span class="text-gray-500 italic">No skills extracted.</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
 
-                    <!-- Submit Button -->
-                    <div class="pt-fluid-8 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
+
+                    <!-- Submit Buttons -->
+                    <div class="pt-fluid-8 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300 flex flex-col sm:flex-row gap-4">
                         <button type="submit" 
                             class="w-full relative flex items-center justify-center gap-4 py-5 rounded-2xl text-fluid-lg font-black text-white shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl overflow-hidden group disabled:cursor-not-allowed disabled:transform-none disabled:opacity-70"
                             x-bind:disabled="isProcessing"
@@ -190,17 +283,22 @@
                             
                             <div x-show="!isProcessing" class="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 group-hover:animate-shine"></div>
 
-                            <span x-show="!isProcessing" class="flex items-center gap-3">
+                            <span x-show="!isProcessing && step === 1" class="flex items-center gap-3">
+                                Preview Application
+                                <svg class="w-6 h-6 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </span>
+                            
+                            <span x-show="!isProcessing && step === 2" class="flex items-center gap-3" style="display: none;">
                                 {{ __('app.job.submit_application') }}
                                 <svg class="w-6 h-6 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                             </span>
                             
-                            <span x-show="isProcessing" class="flex items-center gap-3">
+                            <span x-show="isProcessing" class="flex items-center gap-3" style="display: none;">
                                 <svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                {{ __('app.job.processing') }}
+                                <span x-text="step === 1 ? 'Extracting...' : 'Evaluating...'"></span>
                             </span>
                         </button>
                     </div>
