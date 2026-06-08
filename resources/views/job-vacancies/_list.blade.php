@@ -27,7 +27,7 @@
                             @if($job->company)
                                 <span class="font-bold">{{ $job->company->name }}</span>
                                 <span class="mx-2 text-gray-400">•</span>
-                                <span class="items-center inline-flex mt-1">
+                                <span class="flex items-center mt-1">
                                     <svg class="w-4 h-4 mr-1 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path></svg>
                                     {{ $job->location }}
                                 </span>
