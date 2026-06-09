@@ -170,9 +170,12 @@
                                 :style="filter === '{{ $type->value }}' ? 'border-color: rgb(var(--color-brand-400, 99 102 241) / 0.5)' : ''">
                                 @switch($type->value)
                                     @case('Full-Time') 🏢 @break
+                                    @case('Part-Time') ⏱️ @break
                                     @case('Contract') 📄 @break
                                     @case('Remote') 🌍 @break
                                     @case('Hybrid') 🔄 @break
+                                    @case('Internship') 🎓 @break
+                                    @case('Freelance') 💻 @break
                                 @endswitch
                                 {{ $type->label() }}
                             </button>
