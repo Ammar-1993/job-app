@@ -49,6 +49,11 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Update last_login_at timestamp for activity tracking (use DB to bypass fillable)
+        \Illuminate\Support\Facades\DB::table('users')
+            ->where('id', Auth::id())
+            ->update(['last_login_at' => now()]);
+
         RateLimiter::clear($this->throttleKey());
     }
 
