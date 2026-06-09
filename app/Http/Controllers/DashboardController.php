@@ -83,8 +83,9 @@ class DashboardController extends Controller
 
         if ($request->ajax()) {
             return response()->json([
-                'html'  => view('job-vacancies._list', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount'))->render(),
-                'total' => $jobs->total(),
+                'html'           => view('job-vacancies._list', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount'))->render(),
+                'total'          => $jobs->total(),
+                'savedJobsCount' => $savedJobsCount,
             ]);
         }
 

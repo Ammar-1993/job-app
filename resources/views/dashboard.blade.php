@@ -11,6 +11,7 @@
             filter: '{{ request('filter') }}',
             sort: '{{ request('sort', 'newest') }}',
             totalJobs: {{ $jobs->total() ?? 0 }},
+            savedJobs: {{ $savedJobsCount ?? 0 }},
             loading: false,
             get hasActiveFilters() {
                 return this.search !== '' || this.filter !== '' || this.sort !== 'newest';
@@ -42,6 +43,9 @@
                 .then(data => {
                     document.getElementById('job-list-container').innerHTML = data.html;
                     this.totalJobs = data.total;
+                    if (data.savedJobsCount !== undefined) {
+                        this.savedJobs = data.savedJobsCount;
+                    }
                     this.loading = false;
                     $dispatch('jobs-updated');
                 })
@@ -85,7 +89,7 @@
                             </div>
                             <div>
                                 <p class="text-fluid-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{{ __('app.dashboard.saved_jobs') }}</p>
-                                <p class="text-fluid-xl font-bold text-gray-900 dark:text-white">{{ number_format($savedJobsCount) }}</p>
+                                <p class="text-fluid-xl font-bold text-gray-900 dark:text-white" x-text="savedJobs">{{ number_format($savedJobsCount) }}</p>
                             </div>
                         </div>
                     </div>
