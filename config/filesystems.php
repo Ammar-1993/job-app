@@ -47,7 +47,14 @@ return [
             'report' => false,
         ],
 
-        'cloud' => [
+        'cloud' => env('LARAVEL_CLOUD_DRIVER', 's3') === 'local' ? [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ] : [
             'driver' => 's3',
             'key' => env('LARAVEL_CLOUD_ACCESS_KEY_ID'),
             'secret' => env('LARAVEL_CLOUD_SECRET_ACCESS_KEY'),
