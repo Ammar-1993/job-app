@@ -1209,12 +1209,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ammar-1993/job-shared.git",
-                "reference": "148ce40ebb8e0b223e4e9d5cd31ae89eddd18a59"
+                "reference": "796f42ed20d629512c255f3c41dcd3e58019b54b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ammar-1993/job-shared/zipball/148ce40ebb8e0b223e4e9d5cd31ae89eddd18a59",
-                "reference": "148ce40ebb8e0b223e4e9d5cd31ae89eddd18a59",
+                "url": "https://api.github.com/repos/Ammar-1993/job-shared/zipball/796f42ed20d629512c255f3c41dcd3e58019b54b",
+                "reference": "796f42ed20d629512c255f3c41dcd3e58019b54b",
                 "shasum": ""
             },
             "require": {
@@ -1242,7 +1242,7 @@
                 "source": "https://github.com/Ammar-1993/job-shared/tree/main",
                 "issues": "https://github.com/Ammar-1993/job-shared/issues"
             },
-            "time": "2025-11-30T03:12:59+00:00"
+            "time": "2026-06-10T14:01:58+00:00"
         },
         {
             "name": "laravel/framework",
