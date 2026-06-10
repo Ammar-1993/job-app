@@ -49,8 +49,8 @@ class JobVacancyController extends Controller
                 $extractedInfo = $this->resumeAnalysisService->extractResumeInformation($fileUrl);
 
                 $resume = Resume::create([
-                    'filename' => $originalFileName,
-                    'fileUri' => $path,
+                    'fileName' => $originalFileName,
+                    'fileUrl' => $path,
                     'userId' => auth()->id(),
                     'contactDetails' => json_encode([
                         'name' => auth()->user()->name,
