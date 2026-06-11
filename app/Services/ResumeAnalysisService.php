@@ -27,7 +27,7 @@ class ResumeAnalysisService
                     ],
                     [
                         'role' => 'user',
-                        'content' => "Parse the following resume content and extract the information as a JSON Object with the exact keys: 'summary', 'skills', 'experience', 'education'. The resume content is: {$rawText}. Return an empty string for key that if not found."
+                        'content' => "Parse the following resume content and extract the information as a JSON Object with the exact keys: 'summary', 'skills', 'experience', 'education'. Important: The 'skills' value MUST be an array of strings (e.g. [\"PHP\", \"Laravel\"]). The resume content is: {$rawText}. Return an empty string or empty array for keys that are not found."
                     ]
                 ],
                 'response_format' => [

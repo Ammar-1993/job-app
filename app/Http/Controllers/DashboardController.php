@@ -54,10 +54,17 @@ class DashboardController extends Controller
                     ? json_decode($latestResume->skills, true)
                     : $latestResume->skills;
 
+                // Fallback: If AI returned a formatted string instead of a JSON array
+                if (!is_array($skills) && is_string($latestResume->skills)) {
+                    // Split by newlines, commas, bullets, or semicolons
+                    $skills = preg_split('/[\n,•;]+/', $latestResume->skills);
+                    $skills = array_values(array_filter(array_map('trim', $skills)));
+                }
+
                 if (is_array($skills) && count($skills) > 0) {
                     $matches = 0;
                     foreach ($skills as $skill) {
-                        if (is_string($skill) && str_contains($jobText, strtolower(trim($skill)))) {
+                        if (is_string($skill) && strlen(trim($skill)) > 2 && str_contains($jobText, strtolower(trim($skill)))) {
                             $matches++;
                         }
                     }
