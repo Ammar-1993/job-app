@@ -265,6 +265,18 @@
                                             </template>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Experience -->
+                                    <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-fluid-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
+                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Professional Experience</h4>
+                                        <div class="text-gray-800 dark:text-gray-200 text-fluid-sm whitespace-pre-wrap leading-relaxed" x-text="resumeData.experience || 'No experience details extracted.'"></div>
+                                    </div>
+
+                                    <!-- Education -->
+                                    <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-fluid-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
+                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Education</h4>
+                                        <div class="text-gray-800 dark:text-gray-200 text-fluid-sm whitespace-pre-wrap leading-relaxed" x-text="resumeData.education || 'No education details extracted.'"></div>
+                                    </div>
                                 </div>
                             </template>
                         </div>

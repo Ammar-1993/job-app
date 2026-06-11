@@ -68,10 +68,15 @@ class DashboardController extends Controller
                             $matches++;
                         }
                     }
-                    $score = min(100, round(($matches / max(1, count($skills))) * 100) + rand(10, 30));
+                    // Better algorithm: base score + (matches * 15). Max 95%.
+                    // Add a stable pseudo-random value based on Job ID so it doesn't change on refresh.
+                    $stableRandom = abs(crc32($job->id)) % 15;
+                    $baseScore = 40 + ($matches * 15);
+                    $score = min(100, $baseScore + $stableRandom);
                 }
             } else {
-                $score = rand(40, 85);
+                $stableRandom = abs(crc32($job->id)) % 45;
+                $score = 40 + $stableRandom;
             }
             $job->matchScore = min(100, $score);
             return $job;

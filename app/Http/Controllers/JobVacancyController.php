@@ -66,10 +66,10 @@ class JobVacancyController extends Controller
                     'success' => true,
                     'resume_id' => $resume->id,
                     'extracted' => [
-                        'skills' => is_string($resume->skills) ? json_decode($resume->skills) : $resume->skills,
-                        'experience' => is_string($resume->experience) ? json_decode($resume->experience) : $resume->experience,
+                        'skills' => is_string($resume->skills) ? (json_decode($resume->skills) ?? $resume->skills) : $resume->skills,
+                        'experience' => is_string($resume->experience) ? (json_decode($resume->experience) ?? $resume->experience) : $resume->experience,
                         'summary' => $resume->summary,
-                        'education' => is_string($resume->education) ? json_decode($resume->education) : $resume->education,
+                        'education' => is_string($resume->education) ? (json_decode($resume->education) ?? $resume->education) : $resume->education,
                     ]
                 ]);
             } else {
@@ -79,10 +79,10 @@ class JobVacancyController extends Controller
                     'success' => true,
                     'resume_id' => $resume->id,
                     'extracted' => [
-                        'skills' => is_string($resume->skills) ? json_decode($resume->skills) : $resume->skills,
-                        'experience' => is_string($resume->experience) ? json_decode($resume->experience) : $resume->experience,
+                        'skills' => is_string($resume->skills) ? (json_decode($resume->skills) ?? $resume->skills) : $resume->skills,
+                        'experience' => is_string($resume->experience) ? (json_decode($resume->experience) ?? $resume->experience) : $resume->experience,
                         'summary' => $resume->summary,
-                        'education' => is_string($resume->education) ? json_decode($resume->education) : $resume->education,
+                        'education' => is_string($resume->education) ? (json_decode($resume->education) ?? $resume->education) : $resume->education,
                     ]
                 ]);
             }
