@@ -28,5 +28,6 @@ jobs:
             echo "🧹 Clearing Application Cache and Updating Autoloader..."
             docker exec job_app_web composer dump-autoload
             docker exec job_app_web php artisan optimize:clear
+            docker exec job_app_web php artisan storage:link
             
             echo "✅ Deployment Successful!"
