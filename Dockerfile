@@ -53,6 +53,9 @@ RUN composer dump-autoload --optimize
 # Build frontend assets
 RUN npm run build
 
+# Create storage symlink
+RUN php artisan storage:link
+
 # Set permissions
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
