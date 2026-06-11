@@ -25,7 +25,8 @@ jobs:
             cd /opt/job-platform
             docker compose up -d --build job-app
             
-            echo "🧹 Clearing Application Cache..."
+            echo "🧹 Clearing Application Cache and Updating Autoloader..."
+            docker exec job_app_web composer dump-autoload
             docker exec job_app_web php artisan optimize:clear
             
             echo "✅ Deployment Successful!"
