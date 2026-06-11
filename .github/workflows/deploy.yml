@@ -23,7 +23,7 @@ jobs:
             
             echo "⚙️ Rebuilding Docker Containers..."
             cd /opt/job-platform
-            docker compose up -d --build
+            docker compose up -d --build job-app
             
             echo "🧹 Clearing Application Cache..."
             docker exec job_app_web php artisan optimize:clear
