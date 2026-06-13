@@ -116,10 +116,14 @@
 
                                     <!-- AI Score & Actions -->
                                     <div class="flex md:flex-col items-center md:items-end justify-between gap-4 md:gap-2 shrink-0 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 pt-4 md:pt-0 md:pl-fluid-6">
-                                        <div class="text-center md:text-right">
+                                        <div class="text-center md:text-right w-full md:w-32">
                                             <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">AI Match</p>
-                                            <div class="inline-flex items-baseline text-fluid-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-accent-600 dark:from-brand-400 dark:to-accent-400">
-                                                {{ $jobApplication->aiGeneratedScore }}<span class="text-sm font-bold text-gray-500 dark:text-gray-400 ml-1">%</span>
+                                            <div class="inline-flex items-baseline text-fluid-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-accent-600 dark:from-brand-400 dark:to-accent-400 leading-none">
+                                                {{ $jobApplication->aiGeneratedScore }}<span class="text-sm font-bold text-gray-400 dark:text-gray-500 ml-1">%</span>
+                                            </div>
+                                            <!-- AI Score Progress Bar -->
+                                            <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 mt-2 overflow-hidden shadow-inner">
+                                                <div class="bg-gradient-to-r from-brand-500 to-accent-500 h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: {{ $jobApplication->aiGeneratedScore }}%"></div>
                                             </div>
                                         </div>
 
@@ -128,8 +132,8 @@
                                         @endphp
                                         @if(isset($jobApplication->resume) && $jobApplication->resume && $jobApplication->resume->fileUri)
                                             <a href="{{ $cloudDisk->url($jobApplication->resume->fileUri) }}" target="_blank" 
-                                               class="inline-flex items-center text-fluid-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-2 rounded-xl transition-colors shadow-sm">
-                                                <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                               class="group inline-flex items-center justify-center w-full md:w-auto text-fluid-xs font-bold text-brand-700 dark:text-brand-300 bg-brand-50/50 dark:bg-brand-900/20 hover:bg-brand-100 dark:hover:bg-brand-900/40 border border-brand-200/50 dark:border-brand-700/50 px-4 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 mt-2 md:mt-0">
+                                                <svg class="w-4 h-4 mr-2 text-brand-500 dark:text-brand-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                                 View Resume
                                             </a>
                                         @endif
@@ -144,8 +148,8 @@
                                         <svg class="w-4 h-4 ml-1 transform transition-transform duration-300" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
                                     
-                                    <div x-show="expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-fluid-4 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800" style="display: none;">
-                                        <p class="text-fluid-sm text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                                    <div x-show="expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-fluid-5 bg-gradient-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 dark:to-transparent rounded-2xl border border-gray-100 dark:border-gray-800 border-l-4 border-l-brand-500 dark:border-l-brand-400 shadow-inner" style="display: none;">
+                                        <p class="text-fluid-sm text-gray-800 dark:text-gray-200 leading-relaxed font-medium whitespace-pre-wrap max-w-prose">
                                             {{ $jobApplication->aiGeneratedFeedback }}
                                         </p>
                                     </div>
