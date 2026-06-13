@@ -30,6 +30,12 @@ class JobVacancyController extends Controller
     public function apply(string $id)
     {
         $jobVacancy = JobVacancy::findOrFail($id);
+
+        // Prevent accessing the application form if already applied
+        if (JobApplication::where('jobVacancyId', $id)->where('userId', auth()->id())->exists()) {
+            return redirect()->route('job-vacancies.show', $id)->with('error', 'You have already applied for this job.');
+        }
+
         $resumes = auth()->user()->resumes;
         return view('job-vacancies.apply', compact('jobVacancy', 'resumes'));
     }
@@ -95,6 +101,12 @@ class JobVacancyController extends Controller
     public function processApplication(ApplyJobRequest $request, string $id)
     {
         $jobVacancy = JobVacancy::findOrFail($id);
+
+        // Prevent API submission if already applied
+        if (JobApplication::where('jobVacancyId', $id)->where('userId', auth()->id())->exists()) {
+            return response()->json(['success' => false, 'message' => 'You have already applied for this job.'], 400);
+        }
+
         $resumeId = $request->input('resume_option'); // This will now always be an ID because of the preview step
         
         $resume = Resume::findOrFail($resumeId);
