@@ -27,7 +27,14 @@ class ResumeAnalysisService
                     ],
                     [
                         'role' => 'user',
-                        'content' => "Parse the following resume content and extract the information as a JSON Object with the exact keys: 'summary', 'skills', 'experience', 'education'. Important: The 'skills' value MUST be an array of strings (e.g. [\"PHP\", \"Laravel\"]). The resume content is: {$rawText}. Return an empty string or empty array for keys that are not found."
+                        'content' => "Parse the following resume content and extract the information as a JSON Object with the exact keys: 'summary', 'skills', 'experience', 'education'.
+Important constraints:
+- 'summary' MUST be a single string summarizing the profile.
+- 'skills' MUST be an array of strings (e.g. [\"PHP\", \"Laravel\"]).
+- 'experience' MUST be an array of objects. Each object must have keys like 'job_title', 'company', 'duration', and 'description'.
+- 'education' MUST be an array of objects. Each object must have keys like 'degree', 'institution', and 'graduation_year'.
+If a section is entirely missing from the resume, return an empty array [] for it (or empty string for summary).
+The resume content is: {$rawText}"
                     ]
                 ],
                 'response_format' => [
@@ -58,17 +65,17 @@ class ResumeAnalysisService
             // Return the JSON object
             return [
                 'summary' => $parsedResult['summary'] ?? '',
-                'skills' => $parsedResult['skills'] ?? '',
-                'experience' => $parsedResult['experience'] ?? '',
-                'education' => $parsedResult['education'] ?? ''
+                'skills' => $parsedResult['skills'] ?? [],
+                'experience' => $parsedResult['experience'] ?? [],
+                'education' => $parsedResult['education'] ?? []
             ];
         } catch (\Exception $e) {
             Log::error('Error extracting resume information: ' . $e->getMessage() . ' | trace: ' . $e->getTraceAsString());
             return [
                 'summary' => '',
-                'skills' => '',
-                'experience' => '',
-                'education' => ''
+                'skills' => [],
+                'experience' => [],
+                'education' => []
             ];
         }
     }
