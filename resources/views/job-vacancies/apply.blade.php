@@ -249,19 +249,21 @@
                                 <div class="space-y-fluid-6">
                                     <!-- Summary -->
                                     <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-fluid-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
-                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Professional Summary</h4>
-                                        <p class="text-gray-800 dark:text-gray-200 text-fluid-base leading-relaxed" x-text="resumeData.summary || 'No summary extracted.'"></p>
+                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Professional Summary</h4>
+                                        <div class="border-l-2 border-indigo-500 pl-4 py-1">
+                                            <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed" x-text="resumeData.summary || 'No summary extracted.'"></p>
+                                        </div>
                                     </div>
                                     
                                     <!-- Skills Grid -->
                                     <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-fluid-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
                                         <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Extracted Skills</h4>
-                                        <div class="flex flex-wrap gap-3">
+                                        <div class="border-l-2 border-teal-500 pl-4 py-1 flex flex-wrap gap-3">
                                             <template x-for="skill in (resumeData.skills || [])">
                                                 <span class="px-4 py-2 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 rounded-xl text-fluid-sm font-bold border border-brand-100 dark:border-brand-800/50 shadow-sm transition-transform hover:-translate-y-1 cursor-default" x-text="skill"></span>
                                             </template>
                                             <template x-if="!(resumeData.skills && resumeData.skills.length)">
-                                                <span class="text-gray-500 italic">No skills extracted.</span>
+                                                <span class="text-gray-500 italic text-sm">No skills extracted.</span>
                                             </template>
                                         </div>
                                     </div>
