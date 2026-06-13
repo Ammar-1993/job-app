@@ -49,8 +49,8 @@ class DashboardController extends Controller
         // Pre-fetch actual AI scores from existing applications to prevent N+1 queries
         $jobIds = $jobs->pluck('id')->toArray();
         $userApplications = JobApplication::where('userId', auth()->id())
-            ->whereIn('jobId', $jobIds)
-            ->pluck('aiGeneratedScore', 'jobId')
+            ->whereIn('jobVacancyId', $jobIds)
+            ->pluck('aiGeneratedScore', 'jobVacancyId')
             ->toArray();
 
         $jobs->getCollection()->transform(function ($job) use ($latestResume, $sort, $userApplications) {
