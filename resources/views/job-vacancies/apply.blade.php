@@ -268,14 +268,39 @@
                                     
                                     <!-- Experience -->
                                     <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-fluid-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
-                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Professional Experience</h4>
-                                        <div class="text-gray-800 dark:text-gray-200 text-fluid-sm whitespace-pre-wrap leading-relaxed" x-text="resumeData.experience || 'No experience details extracted.'"></div>
+                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Professional Experience</h4>
+                                        <template x-if="resumeData.experience && resumeData.experience.length > 0">
+                                            <div class="space-y-4">
+                                                <template x-for="exp in resumeData.experience">
+                                                    <div class="border-l-2 border-brand-500 pl-4 py-1">
+                                                        <h5 class="font-bold text-gray-900 dark:text-white" x-text="exp.job_title"></h5>
+                                                        <p class="text-brand-600 dark:text-brand-400 text-sm font-medium" x-text="(exp.company || '') + ' • ' + (exp.duration || '')"></p>
+                                                        <p class="text-gray-600 dark:text-gray-400 text-sm mt-2 leading-relaxed whitespace-pre-wrap" x-text="exp.description"></p>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template x-if="!(resumeData.experience && resumeData.experience.length > 0)">
+                                            <p class="text-gray-500 italic text-fluid-sm">No experience details extracted.</p>
+                                        </template>
                                     </div>
 
                                     <!-- Education -->
                                     <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-fluid-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
-                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Education</h4>
-                                        <div class="text-gray-800 dark:text-gray-200 text-fluid-sm whitespace-pre-wrap leading-relaxed" x-text="resumeData.education || 'No education details extracted.'"></div>
+                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Education</h4>
+                                        <template x-if="resumeData.education && resumeData.education.length > 0">
+                                            <div class="space-y-4">
+                                                <template x-for="edu in resumeData.education">
+                                                    <div class="border-l-2 border-accent-500 pl-4 py-1">
+                                                        <h5 class="font-bold text-gray-900 dark:text-white" x-text="edu.degree"></h5>
+                                                        <p class="text-accent-600 dark:text-accent-400 text-sm font-medium" x-text="(edu.institution || '') + ' • ' + (edu.graduation_year || '')"></p>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template x-if="!(resumeData.education && resumeData.education.length > 0)">
+                                            <p class="text-gray-500 italic text-fluid-sm">No education details extracted.</p>
+                                        </template>
                                     </div>
                                 </div>
                             </template>
