@@ -18,17 +18,21 @@
             <div class="bg-white dark:bg-gray-800/40 p-fluid-6 rounded-2xl shadow-sm hover:shadow-xl dark:hover:bg-gray-700/50 transition-all duration-300 border border-gray-100 dark:border-gray-700/50 group">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <!-- Circular Match Score -->
-                    <div class="shrink-0 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 shadow-inner">
-                        <div class="relative w-16 h-16">
-                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-gray-200 dark:text-gray-700" stroke-width="3"></circle>
-                                <circle cx="18" cy="18" r="16" fill="none" class="stroke-current {{ $job->matchScore >= 80 ? 'text-emerald-500' : ($job->matchScore >= 50 ? 'text-amber-500' : 'text-brand-500') }}" stroke-width="3" stroke-dasharray="100" stroke-dashoffset="{{ 100 - $job->matchScore }}" stroke-linecap="round"></circle>
+                    <div class="shrink-0 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 shadow-inner cursor-default group/circle"
+                         x-data="{ score: 0 }" 
+                         x-init="setTimeout(() => score = {{ $job->matchScore }}, 150)">
+                        <div class="relative w-16 h-16 transform group-hover/circle:scale-110 transition-transform duration-300">
+                            <svg class="w-full h-full transform -rotate-90 drop-shadow-sm" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="18" cy="18" r="15.9155" fill="none" class="stroke-current text-gray-200 dark:text-gray-700" stroke-width="3"></circle>
+                                <circle cx="18" cy="18" r="15.9155" fill="none" 
+                                    class="stroke-current transition-all duration-1000 ease-out {{ $job->matchScore >= 80 ? 'text-emerald-500' : ($job->matchScore >= 50 ? 'text-amber-500' : 'text-brand-500') }}" 
+                                    stroke-width="3" stroke-dasharray="100" stroke-dashoffset="100" :stroke-dashoffset="100 - score" stroke-linecap="round"></circle>
                             </svg>
                             <div class="absolute inset-0 flex items-center justify-center">
                                 <span class="text-sm font-black text-gray-900 dark:text-white">{{ $job->matchScore }}%</span>
                             </div>
                         </div>
-                        <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1">Match</span>
+                        <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1 transition-colors group-hover/circle:text-brand-500 dark:group-hover/circle:text-brand-400">Match</span>
                     </div>
 
                     <div class="flex-grow">
