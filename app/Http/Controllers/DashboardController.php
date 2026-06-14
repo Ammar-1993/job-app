@@ -11,40 +11,82 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $query = JobVacancy::with('company');
+        $query = JobVacancy::with('company')->select('job_vacancies.*');
 
         // Search across title, location, and company name
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('location', 'like', "%{$search}%")
+                $q->where('job_vacancies.title', 'like', "%{$search}%")
+                  ->orWhere('job_vacancies.location', 'like', "%{$search}%")
                   ->orWhereHas('company', fn($q) => $q->where('name', 'like', "%{$search}%"));
             });
         }
 
         // Filter by job type
         if ($request->filled('filter')) {
-            $query->where('type', $request->filter);
+            $query->where('job_vacancies.type', $request->filter);
         }
 
         // Filter by salary range
         if ($request->filled('salary_min')) {
-            $query->where('salary', '>=', $request->salary_min);
+            $query->where('job_vacancies.salary', '>=', $request->salary_min);
         }
-
-        // Sorting
-        $sort = $request->get('sort', 'newest');
-        match ($sort) {
-            'salary_desc' => $query->orderByDesc('salary'),
-            'salary_asc'  => $query->orderBy('salary'),
-            default       => $query->latest(), // newest first
-        };
-
-        $jobs = $query->paginate(10)->withQueryString();
 
         // Get user's latest resume for match score calculation
         $latestResume = auth()->user()->resumes()->latest()->first();
+
+        // Sorting
+        $sort = $request->get('sort', 'newest');
+        if ($sort === 'match') {
+            $query->leftJoin('job_applications', function($join) {
+                $join->on('job_vacancies.id', '=', 'job_applications.jobVacancyId')
+                     ->where('job_applications.userId', '=', auth()->id());
+            });
+
+            $scoreSql = "0";
+            if ($latestResume && !empty($latestResume->skills)) {
+                $skills = is_string($latestResume->skills)
+                    ? json_decode($latestResume->skills, true)
+                    : $latestResume->skills;
+
+                if (!is_array($skills) && is_string($latestResume->skills)) {
+                    $skills = preg_split('/[\n,•;]+/', $latestResume->skills);
+                }
+
+                if (is_array($skills) && count($skills) > 0) {
+                    $skills = array_values(array_filter(array_map('trim', $skills)));
+                    $validSkillsCount = 0;
+                    $skillCases = [];
+
+                    foreach ($skills as $skill) {
+                        $skillStr = strtolower($skill);
+                        if (strlen($skillStr) > 1) {
+                            $validSkillsCount++;
+                            $safeSkill = \Illuminate\Support\Facades\DB::connection()->getPdo()->quote('%' . $skillStr . '%');
+                            $skillCases[] = "(CASE WHEN LOWER(CONCAT(job_vacancies.title, ' ', job_vacancies.description)) LIKE {$safeSkill} THEN 1 ELSE 0 END)";
+                        }
+                    }
+
+                    if ($validSkillsCount > 0) {
+                        $sumSql = implode(' + ', $skillCases);
+                        $divisor = min(5, $validSkillsCount);
+                        $scoreSql = "LEAST(100, ROUND(($sumSql) / $divisor * 100))";
+                    }
+                }
+            }
+
+            $query->orderByRaw("COALESCE(job_applications.aiGeneratedScore, $scoreSql) DESC")
+                  ->orderByDesc('job_vacancies.created_at');
+        } else {
+            match ($sort) {
+                'salary_desc' => $query->orderByDesc('job_vacancies.salary'),
+                'salary_asc'  => $query->orderBy('job_vacancies.salary'),
+                default       => $query->latest('job_vacancies.created_at'), // newest first
+            };
+        }
+
+        $jobs = $query->paginate(10)->withQueryString();
 
         // Pre-fetch actual AI scores from existing applications to prevent N+1 queries
         $jobIds = $jobs->pluck('id')->toArray();
@@ -53,7 +95,7 @@ class DashboardController extends Controller
             ->pluck('aiGeneratedScore', 'jobVacancyId')
             ->toArray();
 
-        $jobs->getCollection()->transform(function ($job) use ($latestResume, $sort, $userApplications) {
+        $jobs->getCollection()->transform(function ($job) use ($latestResume, $userApplications) {
             // If the user already applied, use the highly accurate AI score
             if (isset($userApplications[$job->id]) && $userApplications[$job->id] !== null) {
                 $job->matchScore = (int) $userApplications[$job->id];
@@ -107,11 +149,7 @@ class DashboardController extends Controller
             return $job;
         });
 
-        // Sort by match score client-side if selected
-        if ($sort === 'match') {
-            $sorted = $jobs->getCollection()->sortByDesc('matchScore')->values();
-            $jobs->setCollection($sorted);
-        }
+
 
         // Statistics
         $applicationsSentCount = JobApplication::where('userId', auth()->id())->count();
