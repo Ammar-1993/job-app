@@ -142,6 +142,21 @@ The resume content is: {$rawText}"
     }
 
 
+    public function generateEmbedding(string $text): array
+    {
+        try {
+            $response = OpenAI::embeddings()->create([
+                'model' => 'text-embedding-3-small',
+                'input' => $text,
+            ]);
+
+            return $response->embeddings[0]->embedding;
+        } catch (\Exception $e) {
+            Log::error('Error generating embedding: ' . $e->getMessage());
+            return [];
+        }
+    }
+
     private function extractTextFromPdf(string $fileUrl): string
     {
         // Reading the file from the cloud to local disk storage in temp file

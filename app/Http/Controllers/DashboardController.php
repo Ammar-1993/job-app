@@ -6,6 +6,7 @@ use App\Models\JobVacancy;
 use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class DashboardController extends Controller
 {
@@ -36,118 +37,74 @@ class DashboardController extends Controller
         // Get user's latest resume for match score calculation
         $latestResume = auth()->user()->resumes()->latest()->first();
 
-        // Sorting
+        // Sorting & Match Calculation
         $sort = $request->get('sort', 'newest');
+        
         if ($sort === 'match') {
-            $query->leftJoin('job_applications', function($join) {
-                $join->on('job_vacancies.id', '=', 'job_applications.jobVacancyId')
-                     ->where('job_applications.userId', '=', auth()->id());
+            // Because we compute Cosine Similarity in PHP, we fetch all active jobs, compute score, sort, and manually paginate.
+            $allJobs = $query->get();
+            $resumeEmbedding = ($latestResume && $latestResume->vector_embedding) ? json_decode($latestResume->vector_embedding, true) : null;
+
+            // Pre-fetch AI scores from user applications
+            $jobIds = $allJobs->pluck('id')->toArray();
+            $userApplications = JobApplication::where('userId', auth()->id())
+                ->whereIn('jobVacancyId', $jobIds)
+                ->pluck('aiGeneratedScore', 'jobVacancyId')
+                ->toArray();
+
+            $allJobs->each(function ($job) use ($resumeEmbedding, $userApplications) {
+                if (isset($userApplications[$job->id]) && $userApplications[$job->id] !== null) {
+                    $job->matchScore = (int) $userApplications[$job->id];
+                } else {
+                    $jobEmbedding = $job->vector_embedding ? json_decode($job->vector_embedding, true) : null;
+                    $job->matchScore = ($resumeEmbedding && $jobEmbedding) 
+                        ? $this->calculateCosineSimilarity($resumeEmbedding, $jobEmbedding) 
+                        : 0;
+                }
             });
 
-            $scoreSql = "0";
-            if ($latestResume && !empty($latestResume->skills)) {
-                $skills = is_string($latestResume->skills)
-                    ? json_decode($latestResume->skills, true)
-                    : $latestResume->skills;
-
-                if (!is_array($skills) && is_string($latestResume->skills)) {
-                    $skills = preg_split('/[\n,•;]+/', $latestResume->skills);
-                }
-
-                if (is_array($skills) && count($skills) > 0) {
-                    $skills = array_values(array_filter(array_map('trim', $skills)));
-                    $validSkillsCount = 0;
-                    $skillCases = [];
-
-                    foreach ($skills as $skill) {
-                        $skillStr = strtolower($skill);
-                        if (strlen($skillStr) > 1) {
-                            $validSkillsCount++;
-                            $safeSkill = \Illuminate\Support\Facades\DB::connection()->getPdo()->quote('%' . $skillStr . '%');
-                            $skillCases[] = "(CASE WHEN LOWER(CONCAT(job_vacancies.title, ' ', job_vacancies.description)) LIKE {$safeSkill} THEN 1 ELSE 0 END)";
-                        }
-                    }
-
-                    if ($validSkillsCount > 0) {
-                        $sumSql = implode(' + ', $skillCases);
-                        $divisor = min(5, $validSkillsCount);
-                        $scoreSql = "LEAST(100, ROUND(($sumSql) / $divisor * 100))";
-                    }
-                }
-            }
-
-            $query->orderByRaw("COALESCE(job_applications.aiGeneratedScore, $scoreSql) DESC")
-                  ->orderByDesc('job_vacancies.created_at');
+            $sortedJobs = $allJobs->sortByDesc('matchScore')->values();
+            
+            // Manual pagination
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $perPage = 10;
+            $currentItems = $sortedJobs->slice(($currentPage - 1) * $perPage, $perPage)->all();
+            
+            $jobs = new LengthAwarePaginator($currentItems, count($sortedJobs), $perPage, $currentPage, [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'query' => $request->query()
+            ]);
         } else {
+            // Standard SQL Sorting and Pagination
             match ($sort) {
                 'salary_desc' => $query->orderByDesc('job_vacancies.salary'),
                 'salary_asc'  => $query->orderBy('job_vacancies.salary'),
                 default       => $query->latest('job_vacancies.created_at'), // newest first
             };
-        }
 
-        $jobs = $query->paginate(10)->withQueryString();
+            $jobs = $query->paginate(10)->withQueryString();
 
-        // Pre-fetch actual AI scores from existing applications to prevent N+1 queries
-        $jobIds = $jobs->pluck('id')->toArray();
-        $userApplications = JobApplication::where('userId', auth()->id())
-            ->whereIn('jobVacancyId', $jobIds)
-            ->pluck('aiGeneratedScore', 'jobVacancyId')
-            ->toArray();
+            $resumeEmbedding = ($latestResume && $latestResume->vector_embedding) ? json_decode($latestResume->vector_embedding, true) : null;
+            $jobIds = $jobs->pluck('id')->toArray();
+            $userApplications = JobApplication::where('userId', auth()->id())
+                ->whereIn('jobVacancyId', $jobIds)
+                ->pluck('aiGeneratedScore', 'jobVacancyId')
+                ->toArray();
 
-        $jobs->getCollection()->transform(function ($job) use ($latestResume, $userApplications) {
-            // If the user already applied, use the highly accurate AI score
-            if (isset($userApplications[$job->id]) && $userApplications[$job->id] !== null) {
-                $job->matchScore = (int) $userApplications[$job->id];
+            $jobs->getCollection()->transform(function ($job) use ($resumeEmbedding, $userApplications) {
+                if (isset($userApplications[$job->id]) && $userApplications[$job->id] !== null) {
+                    $job->matchScore = (int) $userApplications[$job->id];
+                    return $job;
+                }
+                
+                $jobEmbedding = $job->vector_embedding ? json_decode($job->vector_embedding, true) : null;
+                $job->matchScore = ($resumeEmbedding && $jobEmbedding) 
+                    ? $this->calculateCosineSimilarity($resumeEmbedding, $jobEmbedding) 
+                    : 0;
+                
                 return $job;
-            }
-
-            $score = 0;
-            if ($latestResume && !empty($latestResume->skills)) {
-                $jobText = strtolower($job->title . ' ' . $job->description);
-                $skills = is_string($latestResume->skills)
-                    ? json_decode($latestResume->skills, true)
-                    : $latestResume->skills;
-
-                // Fallback: If AI returned a formatted string instead of a JSON array
-                if (!is_array($skills) && is_string($latestResume->skills)) {
-                    // Split by newlines, commas, bullets, or semicolons
-                    $skills = preg_split('/[\n,•;]+/', $latestResume->skills);
-                }
-
-                if (is_array($skills) && count($skills) > 0) {
-                    $skills = array_values(array_filter(array_map('trim', $skills)));
-                    $matches = 0;
-                    $validSkillsCount = 0;
-
-                    foreach ($skills as $skill) {
-                        $skillStr = strtolower($skill);
-                        if (strlen($skillStr) > 1) { // Allowing 2-char skills like 'Go', 'C#', 'JS'
-                            $validSkillsCount++;
-                            // Use word boundary for accurate matching to avoid partial word matches
-                            // Special handling for characters like C++ or C#
-                            $escapedSkill = preg_quote($skillStr, '/');
-                            if (preg_match('/\b' . $escapedSkill . '\b/i', $jobText)) {
-                                $matches++;
-                            } elseif (str_contains($jobText, $skillStr)) {
-                                $matches++;
-                            }
-                        }
-                    }
-
-                    if ($validSkillsCount > 0 && $matches > 0) {
-                        // Calculate an honest score. 
-                        // We assume matching up to 5 distinct skills is a great indicator of a strong match,
-                        // avoiding penalizing users who list many skills when only a few are needed for the job.
-                        $score = (int) min(100, round(($matches / min(5, $validSkillsCount)) * 100));
-                    }
-                }
-            } 
-            
-            // Score is an honest 0 if no skills matched or no resume is found.
-            $job->matchScore = $score;
-            return $job;
-        });
+            });
+        }
 
 
 
@@ -165,5 +122,27 @@ class DashboardController extends Controller
         }
 
         return view('dashboard', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount'));
+    }
+
+    private function calculateCosineSimilarity(array $vec1, array $vec2): int
+    {
+        if (count($vec1) !== count($vec2) || count($vec1) === 0) return 0;
+        
+        $dotProduct = 0.0;
+        $mag1 = 0.0;
+        $mag2 = 0.0;
+
+        foreach ($vec1 as $i => $v1) {
+            $v2 = $vec2[$i];
+            $dotProduct += $v1 * $v2;
+            $mag1 += $v1 * $v1;
+            $mag2 += $v2 * $v2;
+        }
+
+        if ($mag1 == 0 || $mag2 == 0) return 0;
+
+        $similarity = $dotProduct / (sqrt($mag1) * sqrt($mag2));
+        
+        return (int) max(0, min(100, round($similarity * 100)));
     }
 }

@@ -55,6 +55,14 @@ class JobVacancyController extends Controller
 
                 $extractedInfo = $this->resumeAnalysisService->extractResumeInformation($fileUrl);
 
+                $resumeTextToEmbed = json_encode([
+                    'summary' => $extractedInfo['summary'],
+                    'skills' => $extractedInfo['skills'],
+                    'experience' => $extractedInfo['experience'],
+                    'education' => $extractedInfo['education']
+                ]);
+                $vectorEmbedding = json_encode($this->resumeAnalysisService->generateEmbedding($resumeTextToEmbed));
+
                 $resume = Resume::create([
                     'fileName' => $originalFileName,
                     'fileUrl' => $path,
@@ -66,7 +74,8 @@ class JobVacancyController extends Controller
                     'summary' => $extractedInfo['summary'],
                     'skills' => $extractedInfo['skills'],
                     'experience' => $extractedInfo['experience'],
-                    'education' => $extractedInfo['education']
+                    'education' => $extractedInfo['education'],
+                    'vector_embedding' => $vectorEmbedding
                 ]);
 
                 return response()->json([
