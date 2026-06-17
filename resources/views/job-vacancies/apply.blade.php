@@ -12,6 +12,18 @@
         isProcessing: false, 
         showConnectionError: false,
         feedbackMessage: '{{ __('app.job.analyzing') }}',
+        selectedOption: '',
+        fileName: '',
+        hasError: false,
+        errorMessage: '',
+        get isStep1Valid() {
+            return this.selectedOption && (this.selectedOption !== 'new_resume' || this.fileName !== '');
+        },
+        get isButtonDisabled() {
+            if (this.isProcessing) return true;
+            if (this.step === 1) return !this.isStep1Valid;
+            return false;
+        },
         previewResume() {
             this.isProcessing = true;
             this.feedbackMessage = 'Extracting resume insights...';
@@ -143,7 +155,7 @@
                             <div class="space-y-3 p-fluid-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                                 @forelse($resumes as $resume)
                                     <label class="flex items-center cursor-pointer group">
-                                        <input type="radio" name="resume_option" id="existing_{{ $resume->id }}" value="{{ $resume->id }}"
+                                        <input type="radio" name="resume_option" x-model="selectedOption" id="existing_{{ $resume->id }}" value="{{ $resume->id }}"
                                             class="form-radio h-5 w-5 text-brand-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-brand-500 transition-colors" />
                                         <div class="ml-4 flex-1">
                                             <p class="text-gray-900 dark:text-white font-bold group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{{ $resume->filename }}</p>
@@ -167,13 +179,9 @@
                         </div>
 
                         <!-- Upload New Resume -->
-                        <div x-data="{ 
-                            fileName: '', 
-                            hasError: false,
-                            errorMessage: ''
-                        }">
+                        <div>
                             <div class="flex items-center mb-fluid-4">
-                                <input x-ref="newResumeRadio" type="radio" name="resume_option" id="new_resume" value="new_resume"
+                                <input x-ref="newResumeRadio" type="radio" name="resume_option" x-model="selectedOption" id="new_resume" value="new_resume"
                                     class="form-radio h-5 w-5 text-brand-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-brand-500" />
                                 <label class="ml-4 text-fluid-base font-bold text-gray-700 dark:text-gray-300 cursor-pointer" for="new_resume">{{ __('app.job.upload_new') }}</label>
                             </div>
@@ -202,6 +210,7 @@
                                             } else {
                                                 fileName = file.name;
                                                 $refs.newResumeRadio.checked = true;
+                                                selectedOption = 'new_resume';
                                                 hasError = false;
                                                 errorMessage = '';
                                             }
@@ -313,11 +322,11 @@
                     <!-- Submit Buttons -->
                     <div class="pt-fluid-8 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300 flex flex-col sm:flex-row gap-4">
                         <button type="submit" 
-                            class="w-full relative flex items-center justify-center gap-4 py-5 rounded-2xl text-fluid-lg font-black text-white shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl overflow-hidden group disabled:cursor-not-allowed disabled:transform-none disabled:opacity-70"
-                            x-bind:disabled="isProcessing"
+                            class="w-full relative flex items-center justify-center gap-4 py-5 rounded-2xl text-fluid-lg font-black shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl overflow-hidden group disabled:cursor-not-allowed disabled:transform-none"
+                            x-bind:disabled="isButtonDisabled"
                             x-bind:class="{ 
-                                'bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 ring-2 ring-brand-500/20 ring-offset-4 dark:ring-offset-gray-900': !isProcessing, 
-                                'bg-gray-200 dark:bg-gray-700 cursor-not-allowed': isProcessing 
+                                'bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white ring-2 ring-brand-500/20 ring-offset-4 dark:ring-offset-gray-900': !isButtonDisabled, 
+                                'bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed shadow-none hover:shadow-none': isButtonDisabled 
                             }">
                             
                             <div x-show="!isProcessing" class="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 group-hover:animate-shine"></div>
