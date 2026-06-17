@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Resume;
+use App\Observers\ResumeObserver;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,5 +27,8 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
+
+        // Auto-generate vector embeddings whenever a resume is created or updated.
+        Resume::observe(ResumeObserver::class);
     }
 }
