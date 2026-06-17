@@ -55,7 +55,7 @@
                 });
             }
         }"
-        @job-saved.window="updateDashboard()"
+        @job-saved.window="if ($event.detail && $event.detail.count !== undefined) savedJobs = $event.detail.count; updateDashboard()"
     >
         <!-- Main Content Wrapper -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

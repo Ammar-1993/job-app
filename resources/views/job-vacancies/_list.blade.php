@@ -68,11 +68,14 @@
                                 method: 'POST',
                                 headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' },
                                 body: new FormData($el)
-                            }).then(() => {
-                                // Logic for updating heart icon could go here
-                                // For now, we reload the dashboard data
-                                $dispatch('job-saved');
                             })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    $dispatch('job-saved', { count: data.savedJobsCount });
+                                }
+                            })
+                            .catch(error => console.error('Error saving job:', error))
                         ">
                             @csrf
                             <button type="submit" class="p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 transform active:scale-95 group/save">

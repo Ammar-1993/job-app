@@ -151,9 +151,20 @@ class JobVacancyController extends Controller
         if ($user->savedJobs()->where('jobVacancyId', $id)->exists()) {
             $user->savedJobs()->detach($id);
             $message = 'Job removed from saved list.';
+            $saved = false;
         } else {
             $user->savedJobs()->attach($id);
             $message = 'Job saved successfully.';
+            $saved = true;
+        }
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'saved' => $saved,
+                'savedJobsCount' => $user->savedJobs()->count()
+            ]);
         }
 
         return back()->with('success', $message);
