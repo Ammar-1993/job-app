@@ -25,7 +25,8 @@
                 <div class="space-y-6">
                     @forelse ($jobApplications as $jobApplication)
                         @php
-                            $status = strtolower($jobApplication->status);
+                            $statusValue = $jobApplication->status instanceof \BackedEnum ? $jobApplication->status->value : (string) $jobApplication->status;
+                            $status = strtolower($statusValue);
                             $statusConfig = match ($status) {
                                 'pending' => [
                                     'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
@@ -102,7 +103,7 @@
                                                 {{ $jobApplication->created_at->diffForHumans() }}
                                             </span>
                                             <span class="{{ $statusConfig['bg'] }} {{ $statusConfig['text'] }} {{ $statusConfig['border'] }} border px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
-                                                {{ $jobApplication->status }}
+                                                {{ $statusValue }}
                                             </span>
                                         </div>
                                         
