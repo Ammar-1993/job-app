@@ -20,20 +20,20 @@
             <div class="relative">
                 
                 <!-- Timeline vertical line (Hidden on small screens for cleaner look) -->
-                <div class="hidden sm:block absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-800"></div>
+                <div class="hidden md:block absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-800"></div>
 
                 <div class="space-y-6">
                     @forelse ($jobApplications as $jobApplication)
                         @php
-                            $status = $jobApplication->status;
+                            $status = strtolower($jobApplication->status);
                             $statusConfig = match ($status) {
                                 'pending' => [
                                     'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
-                                    'color' => 'amber',
-                                    'bg' => 'bg-amber-100 dark:bg-amber-900/40',
-                                    'text' => 'text-amber-700 dark:text-amber-400',
-                                    'border' => 'border-amber-200 dark:border-amber-800',
-                                    'card_border' => 'border-l-amber-500',
+                                    'color' => 'yellow',
+                                    'bg' => 'bg-yellow-100 dark:bg-yellow-500/10',
+                                    'text' => 'text-yellow-700 dark:text-yellow-500',
+                                    'border' => 'border-yellow-200 dark:border-yellow-500/20',
+                                    'card_border' => 'border-l-yellow-500',
                                     'pulse' => true,
                                 ],
                                 'accepted' => [
@@ -56,11 +56,11 @@
                                 ],
                                 default => [
                                     'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
-                                    'color' => 'amber',
-                                    'bg' => 'bg-amber-100 dark:bg-amber-500/10',
-                                    'text' => 'text-amber-700 dark:text-amber-400',
-                                    'border' => 'border-amber-200 dark:border-amber-500/20',
-                                    'card_border' => 'border-l-amber-400 dark:border-l-amber-500',
+                                    'color' => 'yellow',
+                                    'bg' => 'bg-yellow-100 dark:bg-yellow-500/10',
+                                    'text' => 'text-yellow-700 dark:text-yellow-500',
+                                    'border' => 'border-yellow-200 dark:border-yellow-500/20',
+                                    'card_border' => 'border-l-yellow-400 dark:border-l-yellow-500',
                                     'pulse' => true,
                                 ],
                             };
@@ -70,9 +70,9 @@
                             $scoreColorBg = $score >= 80 ? 'bg-emerald-500' : ($score >= 50 ? 'bg-amber-500' : 'bg-rose-500');
                         @endphp
 
-                        <div class="relative sm:pl-24">
+                        <div class="relative md:pl-24">
                             <!-- Timeline Dot -->
-                            <div class="hidden sm:flex absolute left-4 top-6 w-8 h-8 rounded-full items-center justify-center border-4 border-white dark:border-gray-900 {{ $statusConfig['bg'] }} z-10 shadow-sm">
+                            <div class="hidden md:flex absolute left-4 top-6 w-8 h-8 rounded-full items-center justify-center border-4 border-white dark:border-gray-900 {{ $statusConfig['bg'] }} z-10 shadow-sm">
                                 <svg class="w-4 h-4 {{ $statusConfig['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="{{ $statusConfig['icon'] }}"></path>
                                 </svg>
@@ -82,11 +82,14 @@
                             <div class="glass-panel rounded-3xl p-6 hover:scale-[1.01] transition-transform duration-300 relative overflow-hidden border-l-4 {{ $statusConfig['card_border'] }}">
                                 
                                 @if($statusConfig['pulse'])
-                                    <div class="absolute top-0 right-0 p-4">
+                                    <div class="absolute top-6 right-6 group cursor-help">
                                         <span class="flex h-3 w-3">
-                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                                            <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-{{ $statusConfig['color'] }}-400 opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-3 w-3 bg-{{ $statusConfig['color'] }}-500"></span>
                                         </span>
+                                        <div class="absolute right-0 top-6 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-900 dark:bg-gray-800 text-white text-[10px] uppercase tracking-wider px-2 py-1 rounded whitespace-nowrap pointer-events-none z-20">
+                                            Active Application
+                                        </div>
                                     </div>
                                 @endif
 
@@ -99,7 +102,7 @@
                                                 {{ $jobApplication->created_at->diffForHumans() }}
                                             </span>
                                             <span class="{{ $statusConfig['bg'] }} {{ $statusConfig['text'] }} {{ $statusConfig['border'] }} border px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
-                                                {{ $status }}
+                                                {{ $jobApplication->status }}
                                             </span>
                                         </div>
                                         
