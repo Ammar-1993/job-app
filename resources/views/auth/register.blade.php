@@ -41,7 +41,7 @@
                 {{ __('Register') }}
             </x-primary-button>
 
-            <a class="text-indigo-400 hover:text-indigo-300 transition" href="{{ route('login') }}">
+            <a class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition font-bold" href="{{ route('login') }}">
                 {{ __('Already registered?') }}
             </a>
         </div>

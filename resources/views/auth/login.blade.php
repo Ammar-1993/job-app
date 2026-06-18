@@ -27,8 +27,8 @@
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox"
-                    class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                    class="rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-brand-600 shadow-sm focus:ring-brand-500" name="remember">
+                <span class="ms-2 text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
             </label>
         </div>
 
@@ -38,7 +38,7 @@
                 {{ __('Log in') }}
             </x-primary-button>
 
-            <a class="text-indigo-400 hover:text-indigo-300 transition" href="{{ route('register') }}">
+            <a class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition font-bold" href="{{ route('register') }}">
                 {{ __('Don\'t have an account?') }}
             </a>
         </div>
