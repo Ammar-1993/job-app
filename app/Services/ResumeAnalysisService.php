@@ -99,10 +99,19 @@ The resume content is: {$rawText}"
                         'role' => 'system',
                         'content' => "You are an expert HR professional and job recruiter. You are given a job vacancy and a resume. 
                                       Your task is to analyze the resume and determine if the candidate is a good fit for the job. 
-                                      The output should be in JSON format.
-                                      Provide a score from 0 to 100 for the candidate's suitability for the job, and a detailed feedback.
-                                      Response should only be Json that has the following keys: 'aiGeneratedScore', 'aiGeneratedFeedback'.
-                                      Aigenerate feedback should be detailed and specific to the job and the candidate's resume."
+                                      The output MUST be in JSON format with exactly two keys: 'aiGeneratedScore' (integer 0-100) and 'aiGeneratedFeedback' (string).
+                                      The 'aiGeneratedFeedback' MUST be formatted in Markdown using bullet points, structured exactly as follows:
+                                      
+                                      **🟢 نقاط القوة (Strengths):**
+                                      * [Point 1]
+                                      * [Point 2]
+
+                                      **🔴 الفجوات/الملاحظات (Gaps):**
+                                      * [Point 1]
+                                      * [Point 2]
+
+                                      **💡 الخلاصة (Verdict):**
+                                      [A brief summary of the candidate's suitability]"
                     ],
                     [   
                         'role' => 'user',

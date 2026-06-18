@@ -156,10 +156,10 @@
                                         <svg class="w-4 h-4 ml-1 transform transition-transform duration-300" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
                                     
-                                    <div x-show="expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-fluid-5 bg-gradient-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 dark:to-transparent rounded-2xl border border-gray-100 dark:border-gray-800 border-l-4 border-l-brand-500 dark:border-l-brand-400 shadow-inner" style="display: none;">
-                                        <p class="text-fluid-sm text-gray-800 dark:text-gray-200 leading-relaxed font-medium whitespace-pre-wrap max-w-prose">
-                                            {{ $jobApplication->aiGeneratedFeedback }}
-                                        </p>
+                                    <div x-show="expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-fluid-6 bg-gradient-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 dark:to-transparent rounded-2xl border border-gray-100 dark:border-gray-800 border-l-4 border-l-brand-500 dark:border-l-brand-400 shadow-inner" style="display: none;">
+                                        <div class="text-fluid-sm text-gray-800 dark:text-gray-200 leading-relaxed font-medium max-w-prose space-y-4 [&>ul]:list-disc [&>ul]:ml-5 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_strong]:text-gray-900 dark:[&_strong]:text-white">
+                                            {!! Str::markdown($jobApplication->aiGeneratedFeedback ?? '') !!}
+                                        </div>
                                     </div>
                                 </div>
 
