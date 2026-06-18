@@ -7,7 +7,7 @@
 
     <!-- Success Message -->
     @if (session('success'))
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-fluid-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
             <div class="bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 p-4 rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-800 flex items-center">
                 <svg class="w-6 h-6 mr-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 {{ session('success') }}
@@ -22,7 +22,7 @@
                 <!-- Timeline vertical line (Hidden on small screens for cleaner look) -->
                 <div class="hidden sm:block absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-800"></div>
 
-                <div class="space-y-fluid-6">
+                <div class="space-y-6">
                     @forelse ($jobApplications as $jobApplication)
                         @php
                             $status = $jobApplication->status;
@@ -79,7 +79,7 @@
                             </div>
 
                             <!-- Glassmorphic Notification Card -->
-                            <div class="glass-panel rounded-3xl p-fluid-6 hover:scale-[1.01] transition-transform duration-300 relative overflow-hidden border-l-4 {{ $statusConfig['card_border'] }}">
+                            <div class="glass-panel rounded-3xl p-6 hover:scale-[1.01] transition-transform duration-300 relative overflow-hidden border-l-4 {{ $statusConfig['card_border'] }}">
                                 
                                 @if($statusConfig['pulse'])
                                     <div class="absolute top-0 right-0 p-4">
@@ -90,7 +90,7 @@
                                     </div>
                                 @endif
 
-                                <div class="flex flex-col md:flex-row gap-fluid-6">
+                                <div class="flex flex-col md:flex-row gap-6">
                                     
                                     <!-- Primary Info -->
                                     <div class="flex-grow">
@@ -123,7 +123,7 @@
                                     </div>
 
                                     <!-- AI Score & Actions -->
-                                    <div class="flex md:flex-col items-center md:items-end justify-between gap-4 md:gap-2 shrink-0 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 pt-4 md:pt-0 md:pl-fluid-6">
+                                    <div class="flex md:flex-col items-center md:items-end justify-between gap-4 md:gap-2 shrink-0 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 pt-4 md:pt-0 md:pl-6">
                                         <div class="text-center md:text-right w-full md:w-32">
                                             <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">AI Match</p>
                                             <div class="inline-flex items-baseline text-fluid-2xl font-black {{ $scoreColorText }} leading-none">
@@ -156,7 +156,7 @@
                                         <svg class="w-4 h-4 ml-1 transform transition-transform duration-300" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
                                     
-                                    <div x-show="expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-fluid-6 bg-gradient-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 dark:to-transparent rounded-2xl border border-gray-100 dark:border-gray-800 border-l-4 border-l-brand-500 dark:border-l-brand-400 shadow-inner" style="display: none;">
+                                    <div x-show="expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-6 bg-gradient-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 dark:to-transparent rounded-2xl border border-gray-100 dark:border-gray-800 border-l-4 border-l-brand-500 dark:border-l-brand-400 shadow-inner" style="display: none;">
                                         <div class="text-fluid-sm text-gray-800 dark:text-gray-200 leading-relaxed font-medium max-w-prose space-y-4 [&>ul]:list-disc [&>ul]:ml-5 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_strong]:text-gray-900 dark:[&_strong]:text-white">
                                             {!! Str::markdown($jobApplication->aiGeneratedFeedback ?? '') !!}
                                         </div>
