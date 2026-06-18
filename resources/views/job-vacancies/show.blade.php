@@ -39,7 +39,7 @@
                     </div>
 
                 <!-- Job Header -->
-                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-gray-100 dark:border-gray-700 pb-fluid-6 mb-fluid-8">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-gray-100 dark:border-gray-700 pb-6 mb-fluid-8">
                     <div>
                         <h1 class="text-fluid-3xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">{{ $jobVacancy->title }}</h1>
 
@@ -85,7 +85,7 @@
                         <div class="lg:sticky lg:top-8">
                             <h2 class="text-fluid-xl font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-3 mb-6 uppercase tracking-wider">Job Overview</h2>
                             
-                            <div class="bg-gray-50 dark:bg-gray-900/70 rounded-2xl p-fluid-6 space-y-fluid-4 border border-gray-100 dark:border-gray-700/50 shadow-sm transition-colors duration-300 relative overflow-hidden">
+                            <div class="bg-gray-50 dark:bg-gray-900/70 rounded-2xl p-6 sm:p-fluid-8 space-y-fluid-4 border border-gray-100 dark:border-gray-700/50 shadow-sm transition-colors duration-300 relative overflow-hidden w-full">
                                 <!-- Subtle brand gradient accent line -->
                                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r {{ $brandGradient }}"></div>
 

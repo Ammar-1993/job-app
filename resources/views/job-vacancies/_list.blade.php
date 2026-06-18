@@ -15,7 +15,7 @@
     <!-- Actual Content -->
     <div x-show="!loading" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
         @forelse ($jobs as $job)
-            <div class="bg-white dark:bg-gray-800/40 p-fluid-6 rounded-2xl shadow-sm hover:shadow-xl dark:hover:bg-gray-700/50 transition-all duration-300 border border-gray-100 dark:border-gray-700/50 group">
+            <div class="bg-white dark:bg-gray-800/40 p-6 rounded-2xl shadow-sm hover:shadow-xl dark:hover:bg-gray-700/50 transition-all duration-300 border border-gray-100 dark:border-gray-700/50 group">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     @php
                         $jobText = strtolower($job->title . ' ' . $job->description);
