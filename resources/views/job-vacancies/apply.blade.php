@@ -152,9 +152,10 @@
                         <!-- Existing Resumes -->
                         <fieldset class="space-y-fluid-4">
                             <legend class="text-fluid-base font-bold text-gray-700 dark:text-gray-300 mb-3">{{ __('app.job.choose_existing') }}</legend>
-                            <div class="space-y-3 p-fluid-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                            <div class="space-y-3">
                                 @forelse($resumes as $resume)
-                                    <label class="flex items-center cursor-pointer group">
+                                    <label class="flex items-center cursor-pointer group p-4 rounded-2xl border transition-all duration-300"
+                                        x-bind:class="selectedOption == '{{ $resume->id }}' ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-900/20 ring-1 ring-brand-500 shadow-sm' : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 hover:border-brand-300 dark:hover:border-brand-600'">
                                         <input type="radio" name="resume_option" x-model="selectedOption" id="existing_{{ $resume->id }}" value="{{ $resume->id }}"
                                             class="form-radio h-5 w-5 text-brand-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-brand-500 transition-colors" />
                                         <div class="ml-4 flex-1">
@@ -163,7 +164,7 @@
                                         </div>
                                     </label>
                                 @empty
-                                    <p class="text-gray-500 dark:text-gray-400 text-fluid-sm p-2 italic">{{ __('app.job.no_existing_resumes') }}</p>
+                                    <p class="text-gray-500 dark:text-gray-400 text-fluid-sm p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-700 italic">{{ __('app.job.no_existing_resumes') }}</p>
                                 @endforelse
                             </div>
                         </fieldset>
@@ -187,30 +188,43 @@
                             </div>
                             
                             <label for="new_resume_file" class="block cursor-pointer">
-                                <div class="border-2 border-dashed rounded-2xl p-fluid-8 text-center transition-all duration-300"
+                                <div class="border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all duration-300 relative"
+                                    @dragover.prevent="$el.classList.add('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-900/20')"
+                                    @dragleave.prevent="$el.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-900/20')"
+                                    @drop.prevent="
+                                        $el.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-900/20');
+                                        const file = $event.dataTransfer.files[0];
+                                        if (file) {
+                                            const input = $refs.newResumeFile;
+                                            const dt = new DataTransfer();
+                                            dt.items.add(file);
+                                            input.files = dt.files;
+                                            input.dispatchEvent(new Event('change'));
+                                        }
+                                    "
                                     x-bind:class="{ 
-                                        'border-brand-500 bg-brand-50/30 dark:bg-brand-900/10 shadow-lg shadow-brand-500/10': $refs.newResumeRadio.checked, 
-                                        'border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-600': !$refs.newResumeRadio.checked,
+                                        'border-brand-500 bg-brand-50/30 dark:bg-brand-900/10 shadow-lg shadow-brand-500/10': $refs.newResumeRadio.checked && !hasError, 
+                                        'border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-600': !$refs.newResumeRadio.checked && !hasError,
                                         'border-red-500 bg-red-50 dark:bg-red-900/10 shadow-lg shadow-red-500/10': hasError 
                                     }">
                                     
-                                    <input @change="
+                                    <input x-ref="newResumeFile" @change="
                                         const file = $event.target.files[0];
                                         if (file) {
+                                            $refs.newResumeRadio.checked = true;
+                                            selectedOption = 'new_resume';
                                             if (file.type !== 'application/pdf') {
                                                 hasError = true;
-                                                errorMessage = 'Only PDF files are allowed.';
+                                                errorMessage = 'Invalid format! Only PDF files are supported.';
                                                 fileName = '';
                                                 $event.target.value = '';
                                             } else if (file.size > 5 * 1024 * 1024) {
                                                 hasError = true;
-                                                errorMessage = 'File size must be less than 5MB.';
+                                                errorMessage = 'File too large! Maximum size is 5MB.';
                                                 fileName = '';
                                                 $event.target.value = '';
                                             } else {
                                                 fileName = file.name;
-                                                $refs.newResumeRadio.checked = true;
-                                                selectedOption = 'new_resume';
                                                 hasError = false;
                                                 errorMessage = '';
                                             }
@@ -226,7 +240,11 @@
                                         <div>
                                             <p class="text-gray-600 dark:text-gray-400 font-medium">{{ __('app.job.drag_drop') }} <span class="text-brand-600 dark:text-brand-400 font-black">{{ __('app.job.browse') }}</span>.</p>
                                             <p class="text-fluid-xs text-gray-400 dark:text-gray-500 mt-2 uppercase tracking-widest font-bold">{{ __('app.job.max_size') }}</p>
-                                            <p x-show="hasError" x-text="errorMessage" class="text-red-600 dark:text-red-400 text-fluid-sm mt-3 font-bold"></p>
+                                            
+                                            <div x-show="hasError" x-transition class="mt-4 flex items-center justify-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 py-2 px-4 rounded-xl inline-flex font-bold text-sm border border-red-100 dark:border-red-800/50">
+                                                <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                <span x-text="errorMessage"></span>
+                                            </div>
                                         </div>
                                     </template>
 
@@ -320,9 +338,9 @@
 
 
                     <!-- Submit Buttons -->
-                    <div class="pt-fluid-8 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300 flex flex-col sm:flex-row gap-4">
+                    <div class="pt-8 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300 flex flex-col sm:flex-row gap-4">
                         <button type="submit" 
-                            class="w-full relative flex items-center justify-center gap-4 py-5 rounded-2xl text-fluid-lg font-black shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl overflow-hidden group disabled:cursor-not-allowed disabled:transform-none"
+                            class="w-full relative flex items-center justify-center gap-4 py-5 rounded-2xl text-fluid-lg font-black shadow-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl overflow-hidden group disabled:cursor-not-allowed disabled:transform-none"
                             x-bind:disabled="isButtonDisabled"
                             x-bind:class="{ 
                                 'bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white ring-2 ring-brand-500/20 ring-offset-4 dark:ring-offset-gray-900': !isButtonDisabled, 
