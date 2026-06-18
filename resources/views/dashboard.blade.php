@@ -98,7 +98,7 @@
                     <div class="bg-gray-50 dark:bg-gray-800/60 p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-emerald-500 transition-all duration-300 transform hover:-translate-y-1">
                         <div class="flex items-center space-x-4">
                             <div class="p-3 bg-emerald-500 rounded-2xl text-white shadow-md">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"></path></svg>
                             </div>
                             <div>
                                 <p class="text-fluid-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">{{ __('app.dashboard.applications_sent') }}</p>
