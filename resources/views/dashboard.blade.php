@@ -164,20 +164,27 @@
                         @foreach ($filters as $type)
                             <button @click="filter = (filter === '{{ $type->value }}' ? '' : '{{ $type->value }}'); updateDashboard()"
                                 :class="filter === '{{ $type->value }}'
-                                    ? 'bg-brand-600 text-white font-bold ring-2 ring-brand-400 shadow-lg scale-105'
-                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-brand-100 hover:text-brand-700 dark:hover:bg-brand-900/40 dark:hover:text-brand-300'"
-                                class="px-4 py-1.5 rounded-full text-fluid-xs transition-all duration-200 ease-in-out transform active:scale-95 border border-transparent"
-                                :style="filter === '{{ $type->value }}' ? 'border-color: rgb(var(--color-brand-400, 99 102 241) / 0.5)' : ''">
-                                @switch($type->value)
-                                    @case('Full-Time') 🏢 @break
-                                    @case('Part-Time') ⏱️ @break
-                                    @case('Contract') 📄 @break
-                                    @case('Remote') 🌍 @break
-                                    @case('Hybrid') 🔄 @break
-                                    @case('Internship') 🎓 @break
-                                    @case('Freelance') 💻 @break
-                                @endswitch
-                                {{ $type->label() }}
+                                    ? 'bg-brand-600 text-white font-bold shadow-lg scale-105 border-brand-600'
+                                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 hover:text-brand-600 dark:hover:bg-gray-700/50 dark:hover:text-brand-400 border-gray-200 dark:border-gray-700'"
+                                class="flex items-center px-4 py-1.5 rounded-full text-fluid-xs transition-all duration-200 ease-in-out transform active:scale-95 border">
+                                
+                                <!-- Icon/Emoji (hidden when active) -->
+                                <span x-show="filter !== '{{ $type->value }}'" class="mr-1.5 opacity-80">
+                                    @switch($type->value)
+                                        @case('Full-Time') 🏢 @break
+                                        @case('Part-Time') ⏱️ @break
+                                        @case('Contract') 📄 @break
+                                        @case('Remote') 🌍 @break
+                                        @case('Hybrid') 🔄 @break
+                                        @case('Internship') 🎓 @break
+                                        @case('Freelance') 💻 @break
+                                    @endswitch
+                                </span>
+
+                                <!-- Checkmark (shown when active) -->
+                                <svg x-show="filter === '{{ $type->value }}'" style="display: none;" class="w-4 h-4 mr-1.5 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                
+                                <span>{{ $type->label() }}</span>
                             </button>
                         @endforeach
 
