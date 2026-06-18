@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-100">
+        <h2 class="text-fluid-xl font-black text-gray-900 dark:text-white uppercase tracking-wider">
             {{ __('app.profile.info') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-400">
+        <p class="mt-2 text-fluid-sm text-gray-500 dark:text-gray-400">
             {{ __('app.profile.info_desc') }}
         </p>
     </header>
@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-fluid-6 space-y-fluid-6">
         @csrf
         @method('patch')
 

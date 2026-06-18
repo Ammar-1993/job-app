@@ -1,10 +1,10 @@
 <section class="space-y-6">
     <header>
-        <h2 class="text-lg font-medium text-gray-100">
+        <h2 class="text-fluid-xl font-black text-gray-900 dark:text-white uppercase tracking-wider">
             {{ __('app.profile.delete_account') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-400">
+        <p class="mt-2 text-fluid-sm text-gray-500 dark:text-gray-400">
             {{ __('app.profile.delete_account_desc') }}
         </p>
     </header>
@@ -19,11 +19,11 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-gray-900">
+            <h2 class="text-fluid-xl font-black text-gray-900 dark:text-white">
                 {{ __('app.profile.delete_confirm_title') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-400">
+            <p class="mt-2 text-fluid-sm text-gray-500 dark:text-gray-400">
                 {{ __('app.profile.delete_confirm_desc') }}
             </p>
 
@@ -34,7 +34,7 @@
                     id="password"
                     name="password"
                     type="password"
-                    class="mt-1 block w-3/4"
+                    class="mt-1 block w-full"
                     placeholder="{{ __('app.profile.password') }}"
                 />
 
