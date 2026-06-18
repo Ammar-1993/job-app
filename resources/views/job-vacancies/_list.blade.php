@@ -25,7 +25,7 @@
                             <svg class="w-full h-full transform -rotate-90 drop-shadow-sm" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="18" cy="18" r="15.9155" fill="none" class="stroke-current text-gray-200 dark:text-gray-700" stroke-width="3"></circle>
                                 <circle cx="18" cy="18" r="15.9155" fill="none" 
-                                    class="stroke-current transition-all duration-1000 ease-out {{ $job->matchScore >= 80 ? 'text-emerald-500' : ($job->matchScore >= 50 ? 'text-amber-500' : 'text-brand-500') }}" 
+                                    class="stroke-current transition-all duration-1000 ease-out {{ $job->matchScore >= 80 ? 'text-emerald-500' : ($job->matchScore >= 50 ? 'text-amber-500' : 'text-rose-500') }}" 
                                     stroke-width="3" stroke-dasharray="100" stroke-dashoffset="100" :stroke-dashoffset="100 - score" stroke-linecap="round"></circle>
                             </svg>
                             <div class="absolute inset-0 flex items-center justify-center">
