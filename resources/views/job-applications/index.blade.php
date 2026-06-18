@@ -140,7 +140,7 @@
                                         @endphp
                                         @if(isset($jobApplication->resume) && $jobApplication->resume && $jobApplication->resume->fileUri)
                                             <a href="{{ $cloudDisk->url($jobApplication->resume->fileUri) }}" target="_blank" 
-                                               class="group inline-flex items-center justify-center w-full md:w-auto text-fluid-xs font-bold text-brand-700 dark:text-brand-300 bg-brand-50/50 dark:bg-brand-900/20 hover:bg-brand-100 dark:hover:bg-brand-900/40 border border-brand-200/50 dark:border-brand-700/50 px-4 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 mt-2 md:mt-0">
+                                               class="group inline-flex items-center justify-center w-full md:w-auto text-fluid-xs font-bold text-brand-700 dark:text-brand-400 bg-brand-50/50 dark:bg-brand-500/10 hover:bg-brand-100 dark:hover:bg-brand-500/20 border border-brand-200/50 dark:border-brand-500/30 px-4 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 mt-2 md:mt-0">
                                                 <svg class="w-4 h-4 mr-2 text-brand-500 dark:text-brand-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                                 View Resume
                                             </a>
@@ -157,7 +157,7 @@
                                     </button>
                                     
                                     <div x-show="expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-6 bg-gradient-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 dark:to-transparent rounded-2xl border border-solid border-gray-100 dark:border-gray-800 border-l-4 border-l-brand-500 dark:border-l-brand-400 shadow-inner overflow-hidden" style="display: none;">
-                                        <div class="text-fluid-sm text-gray-800 dark:text-gray-100 leading-relaxed font-medium max-w-prose space-y-4 [&>ul]:list-disc [&>ul]:ml-5 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_strong]:text-gray-900 dark:[&_strong]:text-white">
+                                        <div class="text-fluid-sm text-gray-800 dark:text-gray-100 leading-relaxed font-medium max-w-prose space-y-4 [&>ul]:list-disc [&>ul]:ml-5 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_strong]:font-extrabold [&_strong]:text-brand-600 dark:[&_strong]:text-brand-400">
                                             {!! Str::markdown($jobApplication->aiGeneratedFeedback ?? '') !!}
                                         </div>
                                     </div>
