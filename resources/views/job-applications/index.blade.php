@@ -33,6 +33,7 @@
                                     'bg' => 'bg-amber-100 dark:bg-amber-900/40',
                                     'text' => 'text-amber-700 dark:text-amber-400',
                                     'border' => 'border-amber-200 dark:border-amber-800',
+                                    'card_border' => 'border-l-amber-500',
                                     'pulse' => true,
                                 ],
                                 'accepted' => [
@@ -41,6 +42,7 @@
                                     'bg' => 'bg-emerald-100 dark:bg-emerald-900/40',
                                     'text' => 'text-emerald-700 dark:text-emerald-400',
                                     'border' => 'border-emerald-200 dark:border-emerald-800',
+                                    'card_border' => 'border-l-emerald-500',
                                     'pulse' => false,
                                 ],
                                 'rejected' => [
@@ -49,6 +51,7 @@
                                     'bg' => 'bg-red-100 dark:bg-red-900/40',
                                     'text' => 'text-red-700 dark:text-red-400',
                                     'border' => 'border-red-200 dark:border-red-800',
+                                    'card_border' => 'border-l-red-500',
                                     'pulse' => false,
                                 ],
                                 default => [
@@ -57,9 +60,14 @@
                                     'bg' => 'bg-gray-100 dark:bg-gray-800',
                                     'text' => 'text-gray-700 dark:text-gray-300',
                                     'border' => 'border-gray-200 dark:border-gray-700',
+                                    'card_border' => 'border-l-gray-400',
                                     'pulse' => false,
                                 ],
                             };
+                            
+                            $score = $jobApplication->aiGeneratedScore;
+                            $scoreColorText = $score >= 80 ? 'text-emerald-500' : ($score >= 50 ? 'text-amber-500' : 'text-rose-500');
+                            $scoreColorBg = $score >= 80 ? 'bg-emerald-500' : ($score >= 50 ? 'bg-amber-500' : 'bg-rose-500');
                         @endphp
 
                         <div class="relative sm:pl-24">
@@ -71,7 +79,7 @@
                             </div>
 
                             <!-- Glassmorphic Notification Card -->
-                            <div class="glass-panel rounded-3xl p-fluid-6 hover:scale-[1.01] transition-transform duration-300 relative overflow-hidden">
+                            <div class="glass-panel rounded-3xl p-fluid-6 hover:scale-[1.01] transition-transform duration-300 relative overflow-hidden border-l-4 {{ $statusConfig['card_border'] }}">
                                 
                                 @if($statusConfig['pulse'])
                                     <div class="absolute top-0 right-0 p-4">
@@ -118,12 +126,12 @@
                                     <div class="flex md:flex-col items-center md:items-end justify-between gap-4 md:gap-2 shrink-0 border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 pt-4 md:pt-0 md:pl-fluid-6">
                                         <div class="text-center md:text-right w-full md:w-32">
                                             <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">AI Match</p>
-                                            <div class="inline-flex items-baseline text-fluid-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-accent-600 dark:from-brand-400 dark:to-accent-400 leading-none">
-                                                {{ $jobApplication->aiGeneratedScore }}<span class="text-sm font-bold text-gray-400 dark:text-gray-500 ml-1">%</span>
+                                            <div class="inline-flex items-baseline text-fluid-2xl font-black {{ $scoreColorText }} leading-none">
+                                                {{ $score }}<span class="text-sm font-bold text-gray-400 dark:text-gray-500 ml-1">%</span>
                                             </div>
                                             <!-- AI Score Progress Bar -->
                                             <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 mt-2 overflow-hidden shadow-inner">
-                                                <div class="bg-gradient-to-r from-brand-500 to-accent-500 h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: {{ $jobApplication->aiGeneratedScore }}%"></div>
+                                                <div class="{{ $scoreColorBg }} h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: {{ $score }}%"></div>
                                             </div>
                                         </div>
 
@@ -144,7 +152,7 @@
                                 <div x-data="{ expanded: false }" class="mt-fluid-4 border-t border-gray-100 dark:border-gray-700/50 pt-4">
                                     <button @click="expanded = !expanded" class="flex items-center text-fluid-sm font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
                                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        View AI Analysis Feedback
+                                        <span x-text="expanded ? 'Hide AI Analysis Feedback' : 'View AI Analysis Feedback'"></span>
                                         <svg class="w-4 h-4 ml-1 transform transition-transform duration-300" :class="{'rotate-180': expanded}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
                                     
