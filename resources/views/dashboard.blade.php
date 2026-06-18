@@ -10,16 +10,18 @@
             search: '{{ request('search') }}', 
             filter: '{{ request('filter') }}',
             sort: '{{ request('sort', 'match') }}',
+            scope: '{{ request('scope') }}',
             totalJobs: {{ $jobs->total() ?? 0 }},
             savedJobs: {{ $savedJobsCount ?? 0 }},
             loading: false,
             get hasActiveFilters() {
-                return this.search !== '' || this.filter !== '' || this.sort !== 'match';
+                return this.search !== '' || this.filter !== '' || this.sort !== 'match' || this.scope !== '';
             },
             clearFilters() {
                 this.search = '';
                 this.filter = '';
                 this.sort = 'match';
+                this.scope = '';
                 this.updateDashboard();
             },
             updateDashboard() {
@@ -33,6 +35,8 @@
                 else              url.searchParams.delete('filter');
                 if (this.sort && this.sort !== 'match') url.searchParams.set('sort', this.sort);
                 else url.searchParams.delete('sort');
+                if (this.scope)   url.searchParams.set('scope', this.scope);
+                else              url.searchParams.delete('scope');
 
                 window.history.pushState({}, '', url);
 
@@ -69,7 +73,7 @@
                 <!-- Stats Overview Section -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-fluid-4 mb-fluid-12">
                     <!-- Stat Card 1: Total Jobs -->
-                    <div class="bg-brand-50 dark:bg-brand-900/40 p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-brand-500 transition-all duration-300 transform hover:-translate-y-1">
+                    <div @click="clearFilters()" class="cursor-pointer bg-brand-50 dark:bg-brand-900/40 p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-brand-500 transition-all duration-300 transform hover:-translate-y-1">
                         <div class="flex items-center space-x-4">
                             <div class="p-3 bg-brand-500 rounded-2xl text-white shadow-md">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2m4 0h6m-3 0v-2"></path></svg>
@@ -82,7 +86,7 @@
                     </div>
                     
                     <!-- Stat Card 2: Saved Jobs -->
-                    <div class="bg-gray-50 dark:bg-gray-800/60 p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-blue-500 transition-all duration-300 transform hover:-translate-y-1">
+                    <div @click="scope = (scope === 'saved' ? '' : 'saved'); updateDashboard()" :class="scope === 'saved' ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/40' : 'bg-gray-50 dark:bg-gray-800/60'" class="cursor-pointer p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-blue-500 transition-all duration-300 transform hover:-translate-y-1">
                         <div class="flex items-center space-x-4">
                             <div class="p-3 bg-blue-500 rounded-2xl text-white shadow-md">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -95,7 +99,7 @@
                     </div>
 
                     <!-- Stat Card 3: Applications Sent -->
-                    <div class="bg-gray-50 dark:bg-gray-800/60 p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-emerald-500 transition-all duration-300 transform hover:-translate-y-1">
+                    <a href="{{ route('job-applications.index') }}" class="block bg-gray-50 dark:bg-gray-800/60 p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-emerald-500 transition-all duration-300 transform hover:-translate-y-1">
                         <div class="flex items-center space-x-4">
                             <div class="p-3 bg-emerald-500 rounded-2xl text-white shadow-md">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"></path></svg>
@@ -105,10 +109,10 @@
                                 <p class="text-fluid-xl font-bold text-gray-900 dark:text-white">{{ number_format($applicationsSentCount) }}</p>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Stat Card 4: New Today -->
-                    <div class="bg-gray-50 dark:bg-gray-800/60 p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-amber-500 transition-all duration-300 transform hover:-translate-y-1">
+                    <div @click="scope = (scope === 'new_today' ? '' : 'new_today'); updateDashboard()" :class="scope === 'new_today' ? 'ring-2 ring-amber-500 bg-amber-50 dark:bg-amber-900/40' : 'bg-gray-50 dark:bg-gray-800/60'" class="cursor-pointer p-fluid-4 rounded-2xl shadow-sm dark:shadow-lg hover:ring-2 ring-amber-500 transition-all duration-300 transform hover:-translate-y-1">
                         <div class="flex items-center space-x-4">
                             <div class="p-3 bg-amber-500 rounded-2xl text-white shadow-md">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>

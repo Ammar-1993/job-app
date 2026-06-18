@@ -29,6 +29,15 @@ class DashboardController extends Controller
             $query->where('job_vacancies.type', $request->filter);
         }
 
+        if ($request->filled('scope')) {
+            if ($request->scope === 'saved') {
+                $savedJobIds = auth()->user()->savedJobs()->pluck('jobVacancyId');
+                $query->whereIn('job_vacancies.id', $savedJobIds);
+            } elseif ($request->scope === 'new_today') {
+                $query->whereDate('job_vacancies.created_at', Carbon::today());
+            }
+        }
+
         // Filter by salary range
         if ($request->filled('salary_min')) {
             $query->where('job_vacancies.salary', '>=', $request->salary_min);
