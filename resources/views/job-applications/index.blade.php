@@ -55,13 +55,13 @@
                                     'pulse' => false,
                                 ],
                                 default => [
-                                    'icon' => 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-                                    'color' => 'gray',
-                                    'bg' => 'bg-gray-100 dark:bg-gray-800',
-                                    'text' => 'text-gray-700 dark:text-gray-300',
-                                    'border' => 'border-gray-200 dark:border-gray-700',
-                                    'card_border' => 'border-l-gray-400',
-                                    'pulse' => false,
+                                    'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+                                    'color' => 'amber',
+                                    'bg' => 'bg-amber-100 dark:bg-amber-500/10',
+                                    'text' => 'text-amber-700 dark:text-amber-400',
+                                    'border' => 'border-amber-200 dark:border-amber-500/20',
+                                    'card_border' => 'border-l-amber-400 dark:border-l-amber-500',
+                                    'pulse' => true,
                                 ],
                             };
                             
