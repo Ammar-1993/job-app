@@ -1,7 +1,7 @@
 <x-guest-layout>
-    <div class="text-center mb-fluid-8">
-        <h2 class="text-fluid-2xl font-black text-gray-900 dark:text-white tracking-tight">{{ __('Create Account') }}</h2>
-        <p class="text-fluid-sm text-gray-500 dark:text-gray-400 mt-2 font-medium">{{ __('Join our platform today') }}</p>
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('Create Account') }}</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 font-medium">{{ __('Join our platform today') }}</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-fluid-6">

@@ -2,9 +2,9 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-6" :status="session('status')" />
 
-    <div class="text-center mb-fluid-8">
-        <h2 class="text-fluid-2xl font-black text-gray-900 dark:text-white tracking-tight">{{ __('Welcome Back') }}</h2>
-        <p class="text-fluid-sm text-gray-500 dark:text-gray-400 mt-2 font-medium">{{ __('Please sign in to your account') }}</p>
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('Welcome Back') }}</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 font-medium">{{ __('Please sign in to your account') }}</p>
     </div>
 
     <form method="POST" action="{{ route('login') }}" class="space-y-fluid-6">
