@@ -157,7 +157,7 @@
                                     </button>
                                     
                                     <div x-show="expanded" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4 p-6 bg-gradient-to-r from-brand-50/50 to-transparent dark:from-brand-900/10 dark:to-transparent rounded-2xl border border-solid border-gray-100 dark:border-gray-800 border-l-4 border-l-brand-500 dark:border-l-brand-400 shadow-inner overflow-hidden" style="display: none;">
-                                        <div class="text-fluid-sm text-gray-800 dark:text-gray-100 leading-relaxed font-medium max-w-prose space-y-4 [&>ul]:list-disc [&>ul]:ml-5 [&>p]:mb-4 [&>p:last-child]:mb-0 [&_strong]:font-extrabold [&_strong]:text-brand-600 dark:[&_strong]:text-brand-400">
+                                        <div class="text-fluid-sm text-gray-800 dark:text-gray-100 leading-relaxed font-medium max-w-prose space-y-2 [&>ul]:list-disc [&>ul]:list-outside [&>ul]:pl-5 [&>ul]:mb-6 [&>ul>li]:mb-1 [&>p]:mb-2 [&>p:last-child]:mb-0 [&_strong]:font-extrabold [&_strong]:text-brand-600 dark:[&_strong]:text-brand-400">
                                             {!! Str::markdown($jobApplication->aiGeneratedFeedback ?? '') !!}
                                         </div>
                                     </div>
