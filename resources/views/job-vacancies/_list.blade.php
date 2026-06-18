@@ -17,10 +17,53 @@
         @forelse ($jobs as $job)
             <div class="bg-white dark:bg-gray-800/40 p-fluid-6 rounded-2xl shadow-sm hover:shadow-xl dark:hover:bg-gray-700/50 transition-all duration-300 border border-gray-100 dark:border-gray-700/50 group">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    @php
+                        $jobText = strtolower($job->title . ' ' . $job->description);
+                        $matchedSkills = [];
+                        if(isset($userSkills) && is_array($userSkills)) {
+                            foreach($userSkills as $skill) {
+                                if(str_contains($jobText, strtolower($skill))) {
+                                    $matchedSkills[] = $skill;
+                                }
+                            }
+                        }
+                        $matchedSkillsDisplay = array_slice($matchedSkills, 0, 3);
+                    @endphp
                     <!-- Circular Match Score -->
-                    <div class="shrink-0 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 shadow-inner cursor-default group/circle"
+                    <div class="relative shrink-0 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 shadow-inner cursor-default group/circle"
                          x-data="{ score: 0 }" 
                          x-init="setTimeout(() => score = {{ $job->matchScore }}, 150)">
+                         
+                        <!-- Tooltip -->
+                        <div class="absolute bottom-full mb-3 w-48 p-3 bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-xl shadow-xl opacity-0 invisible group-hover/circle:opacity-100 group-hover/circle:visible transition-all duration-300 z-10 transform translate-y-2 group-hover/circle:translate-y-0 pointer-events-none text-center">
+                            @if($job->matchScore >= 80)
+                                <p class="font-bold text-emerald-400 mb-1">Excellent Match!</p>
+                                <p class="text-gray-300 leading-tight">Your profile strongly aligns with this role.</p>
+                            @elseif($job->matchScore >= 50)
+                                <p class="font-bold text-amber-400 mb-1">Good Match</p>
+                                <p class="text-gray-300 leading-tight">You have some of the required skills.</p>
+                            @else
+                                <p class="font-bold text-rose-400 mb-1">Low Match</p>
+                                <p class="text-gray-300 leading-tight">Significant skills may be missing for this role.</p>
+                            @endif
+                            
+                            @if(count($matchedSkillsDisplay) > 0)
+                                <div class="mt-2 pt-2 border-t border-gray-700 text-left">
+                                    <p class="text-[10px] text-gray-400 uppercase font-bold mb-1">Matched Skills:</p>
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($matchedSkillsDisplay as $ms)
+                                            <span class="bg-gray-700 px-1.5 py-0.5 rounded text-[10px]">{{ $ms }}</span>
+                                        @endforeach
+                                        @if(count($matchedSkills) > 3)
+                                            <span class="text-gray-400 text-[10px] mt-0.5">+{{ count($matchedSkills) - 3 }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                            <!-- Tooltip Arrow -->
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
+                        </div>
+
                         <div class="relative w-16 h-16 transform group-hover/circle:scale-110 transition-transform duration-300">
                             <svg class="w-full h-full transform -rotate-90 drop-shadow-sm" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="18" cy="18" r="15.9155" fill="none" class="stroke-current text-gray-200 dark:text-gray-700" stroke-width="3"></circle>

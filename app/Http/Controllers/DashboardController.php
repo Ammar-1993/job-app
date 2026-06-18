@@ -113,15 +113,21 @@ class DashboardController extends Controller
         $newJobsTodayCount     = JobVacancy::whereDate('created_at', Carbon::today())->count();
         $savedJobsCount        = auth()->user()->savedJobs()->count();
 
+        $userSkills = [];
+        if ($latestResume && $latestResume->skills) {
+            $userSkills = is_string($latestResume->skills) ? json_decode($latestResume->skills, true) : $latestResume->skills;
+            if (!is_array($userSkills)) $userSkills = [];
+        }
+
         if ($request->ajax()) {
             return response()->json([
-                'html'           => view('job-vacancies._list', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount'))->render(),
+                'html'           => view('job-vacancies._list', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount', 'userSkills'))->render(),
                 'total'          => $jobs->total(),
                 'savedJobsCount' => $savedJobsCount,
             ]);
         }
 
-        return view('dashboard', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount'));
+        return view('dashboard', compact('jobs', 'applicationsSentCount', 'newJobsTodayCount', 'savedJobsCount', 'userSkills'));
     }
 
     private function calculateCosineSimilarity(array $vec1, array $vec2): int
