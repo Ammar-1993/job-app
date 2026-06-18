@@ -23,7 +23,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex items-center justify-center relative overflow-hidden transition-colors duration-300">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen flex items-center justify-center relative overflow-x-hidden overflow-y-auto transition-colors duration-300">
     <!-- Floating Background Shapes -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div
@@ -44,15 +44,8 @@
     <div class="absolute inset-0 bg-gradient-to-t from-gray-50 dark:from-gray-900 via-transparent to-gray-50/80 dark:to-gray-900/80 pointer-events-none transition-colors duration-300"></div>
 
     <!-- Main Content Container -->
-    <div class="relative z-10 w-full min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0"
+    <div class="relative z-10 w-full min-h-screen flex flex-col justify-center items-center py-8 px-4"
         x-data="{ show: false }" x-init="setTimeout(() => show = true, 300)">
-        <!-- Application Logo -->
-        <div class="mb-8" x-cloak x-show="show" x-transition:enter="transition ease-out duration-700"
-            x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors" />
-            </a>
-        </div>
 
         <!-- Content Card -->
         <div x-cloak x-show="show" x-transition:enter="transition ease-out duration-700"
