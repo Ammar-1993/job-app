@@ -26,7 +26,7 @@
 
                 <div class="p-6 sm:p-fluid-8 relative">
                     <!-- Company Logo/Initials Badge overlapping the header -->
-                    <div class="absolute -top-16 sm:-top-20 left-6 sm:left-fluid-8 w-20 h-20 sm:w-24 sm:h-24 bg-white dark:bg-gray-900 rounded-2xl shadow-xl flex items-center justify-center border-4 border-white dark:border-gray-800 transform rotate-3 hover:rotate-0 transition-transform duration-300 z-10">
+                    <div class="absolute -top-16 sm:-top-20 left-6 sm:left-fluid-8 w-20 h-20 sm:w-24 sm:h-24 bg-white dark:bg-gray-900 rounded-2xl shadow-xl flex items-center justify-center border-4 border-white dark:border-gray-800 ring-1 ring-black/5 dark:ring-white/10 transform rotate-3 hover:rotate-0 transition-transform duration-300 z-10">
                         <span class="text-2xl sm:text-3xl font-black bg-clip-text text-transparent bg-gradient-to-br {{ $brandGradient }}">{{ $initials }}</span>
                     </div>
 
@@ -76,8 +76,21 @@
                     
                     <div class="lg:col-span-2">
                         <h2 class="text-fluid-xl font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-3 mb-6 uppercase tracking-wider">Job Description</h2>
-                        <div class="text-gray-600 dark:text-gray-300 leading-relaxed space-y-4 text-fluid-base max-w-none">
-                            <p>{!! nl2br(e($jobVacancy->description)) !!}</p>
+                        <div class="text-gray-600 dark:text-gray-300 leading-relaxed space-y-4 text-fluid-base max-w-none [&>ul]:list-disc [&>ul]:list-outside [&>ul]:pl-5 [&>ul]:mb-6 [&>ul>li]:mb-1 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>h1]:text-2xl [&>h1]:font-bold [&>h1]:mb-4 [&>h2]:text-xl [&>h2]:font-bold [&>h2]:mb-3 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:mb-2 [&_strong]:font-bold [&_strong]:text-gray-900 dark:[&_strong]:text-white">
+                            {!! Str::markdown($jobVacancy->description ?? '') !!}
+                        </div>
+                        
+                        <!-- Bottom Apply Section for long descriptions -->
+                        <div class="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 text-center lg:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-xl font-black text-gray-900 dark:text-white">Ready to join the team?</h3>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Take the next step in your career journey.</p>
+                            </div>
+                            <a href="{{ route('job-vacancies.apply', $jobVacancy->id) }}"
+                               class="w-full sm:w-auto inline-flex items-center justify-center text-fluid-base font-bold bg-gradient-to-r {{ $brandGradient }} text-white rounded-2xl px-10 py-4 shadow-xl transition duration-500 ease-in-out transform hover:scale-[1.02] active:scale-[0.98]">
+                                Apply Now
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                            </a>
                         </div>
                     </div>
                     
