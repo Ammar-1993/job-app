@@ -9,17 +9,17 @@
         x-data="{ 
             search: '{{ request('search') }}', 
             filter: '{{ request('filter') }}',
-            sort: '{{ request('sort', 'newest') }}',
+            sort: '{{ request('sort', 'match') }}',
             totalJobs: {{ $jobs->total() ?? 0 }},
             savedJobs: {{ $savedJobsCount ?? 0 }},
             loading: false,
             get hasActiveFilters() {
-                return this.search !== '' || this.filter !== '' || this.sort !== 'newest';
+                return this.search !== '' || this.filter !== '' || this.sort !== 'match';
             },
             clearFilters() {
                 this.search = '';
                 this.filter = '';
-                this.sort = 'newest';
+                this.sort = 'match';
                 this.updateDashboard();
             },
             updateDashboard() {
@@ -31,7 +31,7 @@
                 else              url.searchParams.delete('search');
                 if (this.filter)  url.searchParams.set('filter', this.filter);
                 else              url.searchParams.delete('filter');
-                if (this.sort && this.sort !== 'newest') url.searchParams.set('sort', this.sort);
+                if (this.sort && this.sort !== 'match') url.searchParams.set('sort', this.sort);
                 else url.searchParams.delete('sort');
 
                 window.history.pushState({}, '', url);

@@ -38,7 +38,7 @@ class DashboardController extends Controller
         $latestResume = auth()->user()->resumes()->latest()->first();
 
         // Sorting & Match Calculation
-        $sort = $request->get('sort', 'newest');
+        $sort = $request->get('sort', 'match');
         
         if ($sort === 'match') {
             // Because we compute Cosine Similarity in PHP, we fetch all active jobs, compute score, sort, and manually paginate.
