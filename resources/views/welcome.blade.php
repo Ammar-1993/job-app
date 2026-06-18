@@ -1,5 +1,21 @@
 
 <x-main-layout title="Hire Me - Find your dream job">
+    <!-- Application Logo Presentation -->
+    <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 100)">
+        <div class="flex justify-center mb-fluid-6" x-cloak x-show="show"
+            x-transition:enter="transition ease-out duration-1000 transform" x-transition:enter-start="opacity-0 -translate-y-8 scale-90"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100">
+            <div class="relative group cursor-default">
+                <!-- Glowing effect behind logo -->
+                <div class="absolute -inset-2 bg-gradient-to-r from-brand-500 to-accent-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                <!-- Logo container -->
+                <div class="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-2xl border border-gray-100 dark:border-white/10 shadow-xl dark:shadow-2xl transform group-hover:-translate-y-1 transition duration-500">
+                    <x-application-logo class="w-16 h-16 sm:w-20 sm:h-20 fill-current text-brand-600 dark:text-brand-400" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 300)">
         <div class="inline-flex items-center mb-fluid-2" x-cloak x-show="show"
             x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 scale-90"
