@@ -1,46 +1,74 @@
 <x-guest-layout>
     <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <x-auth-session-status class="mb-6" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <div class="text-center mb-fluid-8">
+        <h2 class="text-fluid-2xl font-black text-gray-900 dark:text-white tracking-tight">{{ __('Welcome Back') }}</h2>
+        <p class="text-fluid-sm text-gray-500 dark:text-gray-400 mt-2 font-medium">{{ __('Please sign in to your account') }}</p>
+    </div>
+
+    <form method="POST" action="{{ route('login') }}" class="space-y-fluid-6">
         @csrf
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required
-                autofocus autocomplete="username" />
+            <label for="email" class="block text-fluid-sm font-bold text-gray-700 dark:text-gray-300 mb-2">{{ __('Email') }}</label>
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+                <input id="email" class="pl-11 block w-full rounded-xl shadow-sm transition-all text-fluid-base py-3 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 focus:border-brand-500 focus:ring-brand-500" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="name@example.com" />
+            </div>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <label for="password" class="block text-fluid-sm font-bold text-gray-700 dark:text-gray-300">{{ __('Password') }}</label>
+                @if (Route::has('password.request'))
+                    <a class="text-fluid-xs font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors" href="{{ route('password.request') }}">
+                        {{ __('Forgot password?') }}
+                    </a>
+                @endif
+            </div>
 
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
-                autocomplete="current-password" />
+            <div class="relative group" x-data="{ showPassword: false }">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+                <input id="password" class="pl-11 pr-11 block w-full rounded-xl shadow-sm transition-all text-fluid-base py-3 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-800 focus:border-brand-500 focus:ring-brand-500" x-bind:type="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" placeholder="••••••••" />
 
+                <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 dark:text-gray-500 hover:text-brand-500 dark:hover:text-brand-400 transition-colors" @click="showPassword = !showPassword" tabindex="-1">
+                    <svg x-show="showPassword" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 5 8.268 7.943 9.542 12-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    <svg x-show="!showPassword" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                </button>
+            </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox"
-                    class="rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-brand-600 shadow-sm focus:ring-brand-500" name="remember">
-                <span class="ms-2 text-sm font-medium text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
+        <div class="block">
+            <label for="remember_me" class="inline-flex items-center cursor-pointer group">
+                <div class="relative flex items-center justify-center">
+                    <input id="remember_me" type="checkbox" class="peer rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-brand-600 shadow-sm focus:ring-brand-500 w-5 h-5 transition-all cursor-pointer" name="remember">
+                </div>
+                <span class="ms-3 text-fluid-sm font-bold text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{{ __('Remember me') }}</span>
             </label>
         </div>
 
-        <div class="flex flex-col items-center justify-end mt-4 gap-4">
-
-            <x-primary-button class="w-full">
+        <div class="pt-4 flex flex-col gap-4">
+            <button type="submit" class="w-full flex justify-center items-center py-4 px-4 rounded-xl shadow-md text-fluid-base font-black text-white bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-brand-500 transition-all duration-300 transform active:scale-[0.98]">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
                 {{ __('Log in') }}
-            </x-primary-button>
-
-            <a class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition font-bold" href="{{ route('register') }}">
+            </button>
+            
+            <p class="text-center text-fluid-sm text-gray-600 dark:text-gray-400 font-medium">
                 {{ __('Don\'t have an account?') }}
-            </a>
+                <a class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition font-bold ml-1" href="{{ route('register') }}">
+                    {{ __('Create one now') }}
+                </a>
+            </p>
         </div>
     </form>
 </x-guest-layout>
