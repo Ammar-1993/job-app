@@ -47,6 +47,18 @@
     <div class="relative z-10 w-full min-h-screen flex flex-col justify-center items-center py-8 px-4"
         x-data="{ show: false }" x-init="setTimeout(() => show = true, 300)">
 
+        <!-- Application Logo & Title -->
+        <div class="z-10 mb-6 sm:mb-8 transform transition-transform hover:scale-105 duration-300" x-cloak x-show="show" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+            <a href="/" class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-lg flex items-center justify-center p-3 mb-3 border border-gray-100 dark:border-gray-700/50">
+                    <x-application-logo class="w-full h-full fill-current text-brand-600 dark:text-brand-400" />
+                </div>
+                <span class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-accent-600 dark:from-brand-400 dark:to-accent-400 tracking-tight">
+                    Job Vacancies
+                </span>
+            </a>
+        </div>
+
         <!-- Content Card -->
         <div x-cloak x-show="show" x-transition:enter="transition ease-out duration-700"
             x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0"
