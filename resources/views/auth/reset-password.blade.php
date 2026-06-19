@@ -1,10 +1,10 @@
 <x-guest-layout>
-    <div class="text-center mb-8">
+    <div class="text-center mb-6">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('Choose a New Password') }}</h2>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 font-medium">{{ __('Make sure it\'s strong and secure') }}</p>
     </div>
 
-    <form method="POST" action="{{ route('password.store') }}" class="space-y-fluid-6">
+    <form method="POST" action="{{ route('password.store') }}" class="space-y-4">
         @csrf
 
         <!-- Password Reset Token -->

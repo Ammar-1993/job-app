@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="text-center mb-8">
+    <div class="text-center mb-6">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ __('Reset Password') }}</h2>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 font-medium leading-relaxed">{{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link.') }}</p>
     </div>
@@ -7,7 +7,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-6" :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}" class="space-y-fluid-6">
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
         @csrf
 
         <!-- Email Address -->
