@@ -1,70 +1,56 @@
-# Use the official FrankenPHP image
-FROM dunglas/frankenphp
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    poppler-utils \
-    default-mysql-client \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs
-
-# Install PHP extensions
-RUN install-php-extensions \
-    pdo_mysql \
-    mysqli
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Set working directory
+# ==========================================
+# Stage 1: PHP/Composer Build dependencies
+# ==========================================
+FROM composer:2 AS php-builder
 WORKDIR /app
-
-# Copy composer files
 COPY composer.json composer.lock ./
-
-# Install Composer dependencies
-RUN composer install --no-scripts --no-autoloader
-
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Install Node.js dependencies
-RUN npm install
-
-# Copy the rest of the application
+# تثبيت الحزم بدون إضافات التطوير
+RUN composer install --ignore-platform-reqs --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev
 COPY . .
+RUN composer dump-autoload --optimize --no-dev
 
-# Copy PHP configuration
-COPY php.ini /usr/local/etc/php/conf.d/custom.ini
-
-# Generate autoload files
-RUN composer dump-autoload --optimize
-
-# Build frontend assets
+# ==========================================
+# Stage 2: Node.js/Frontend Build
+# ==========================================
+FROM node:20-alpine AS node-builder
+WORKDIR /app
+COPY package.json package-lock.json vite.config.js postcss.config.js tailwind.config.js ./
+RUN npm ci
+COPY . .
+# بناء ملفات الواجهة الأمامية
 RUN npm run build
 
-# Create storage symlink
-RUN php artisan storage:link
+# ==========================================
+# Stage 3: Final Production Image (Alpine)
+# ==========================================
+# استخدام نسخة Alpine الخفيفة جداً بدلاً من الأساسية
+FROM dunglas/frankenphp:php8.2-alpine
 
-# Set permissions
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+# تثبيت الحزم الأساسية الخفيفة فقط
+RUN apk add --no-cache \
+    poppler-utils \
+    mariadb-client
 
-# Copy Caddyfile
+# تثبيت إضافات PHP
+RUN install-php-extensions pdo_mysql mysqli
+
+WORKDIR /app
+
+# نسخ كود المشروع النظيف
+COPY . .
+
+# نسخ الحزم الجاهزة من المراحل السابقة (دون تحميل Node أو Composer هنا!)
+COPY --from=php-builder /app/vendor/ ./vendor/
+COPY --from=node-builder /app/public/build/ ./public/build/
+
+# نسخ إعدادات PHP و Caddy
+COPY php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY Caddyfile /etc/caddy/Caddyfile
 
-# Expose ports
-EXPOSE 80
-EXPOSE 443
+# إنشاء رابط التخزين وضبط الصلاحيات
+RUN php artisan storage:link && \
+    chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public
 
-# Start FrankenPHP
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"] 
+EXPOSE 80 443
+
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
