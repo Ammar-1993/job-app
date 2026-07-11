@@ -24,7 +24,7 @@ RUN npm run build
 # Stage 3: Final Production Image (Alpine)
 # ==========================================
 # استخدام نسخة Alpine الخفيفة جداً بدلاً من الأساسية
-FROM dunglas/frankenphp:php8.2-alpine
+FROM dunglas/frankenphp:php8.4-alpine
 
 # تثبيت الحزم الأساسية الخفيفة فقط
 RUN apk add --no-cache \
