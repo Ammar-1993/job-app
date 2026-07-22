@@ -12,7 +12,7 @@
 </div>
 
 
-- [Live Demo](https://ammar-jobs.duckdns.org/)
+- [Live Demo](https://hireme-platform.online/)
 
 ---
 
@@ -135,7 +135,7 @@ Before setting up the project, ensure your environment meets the following prere
 - **Composer**: Latest version
 - **Node.js**: >= 18.x & **NPM**
 - **Database**: MySQL 8.0+ or MariaDB 10+
-- **Web Server**: Nginx or Apache (or Laravel Sail/Valet)
+- **Web Server**: Caddy (used in production) or Nginx/Apache (local dev)
 
 ---
 
@@ -145,8 +145,8 @@ Follow these steps to get the project running locally.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/job-app.git
-cd job-app
+git clone https://github.com/Ammar-1993/job-vacancies-platform.git
+cd job-vacancies-platform/job-app
 ```
 
 ### 2. Install Dependencies
