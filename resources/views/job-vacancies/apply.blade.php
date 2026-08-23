@@ -114,7 +114,7 @@
                         </span>
                         <span class="text-fluid-sm flex items-center font-medium">
                             <svg class="w-4 h-4 mr-1.5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V4m0 16v-4m-6-4h12"></path></svg>
-                            {{ '$' . number_format($jobVacancy->salary) }}
+                            {{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'N/A') }}
                         </span>
                         <span class="px-4 py-1 bg-brand-600 text-white rounded-full text-fluid-xs font-bold shadow-md">{{ $jobVacancy->type }}</span>
                     </div>

@@ -97,7 +97,7 @@
                         <div class="flex flex-wrap items-center gap-4 mt-3">
                             <p class="text-fluid-sm text-gray-500 dark:text-gray-400 flex items-center bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1 rounded-lg">
                                 <svg class="w-4 h-4 mr-1.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V9m0 3v2.25M8 12h8m-11 3.5a9 9 0 1118 0M3 12a9 9 0 009 9c1.674 0 3.298-.488 4.657-1.404"></path></svg>
-                                <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ '$' . number_format($job->salary) }}</span>
+                                <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ is_numeric($job->salary) ? '$' . number_format($job->salary) : ($job->salary ?: 'N/A') }}</span>
                                 <span class="ml-1">/ year</span>
                             </p>
                             <span class="bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 px-3 py-1 rounded-lg text-fluid-xs font-bold uppercase tracking-wider">

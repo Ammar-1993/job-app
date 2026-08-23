@@ -56,7 +56,7 @@
                             </div>
                             <div class="flex items-center text-fluid-base">
                                 <svg class="w-4 h-4 mr-1.5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V4m0 16v-4m-6-4h12"></path></svg>
-                                <span class="font-medium">{{ '$' . number_format($jobVacancy->salary) }}</span>
+                                <span class="font-medium">{{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'N/A') }}</span>
                             </div>
                             <span class="px-4 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-fluid-xs font-bold">{{ $jobVacancy->type }}</span>
                         </div>
@@ -123,7 +123,7 @@
                                 
                                 <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
                                     <p class="text-fluid-xs font-bold text-gray-400 uppercase">Salary</p>
-                                    <p class="text-gray-900 dark:text-white text-fluid-lg font-black">{{ '$' . number_format($jobVacancy->salary) }}</p>
+                                    <p class="text-gray-900 dark:text-white text-fluid-lg font-black">{{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'N/A') }}</p>
                                 </div>
                                 
                                 <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
