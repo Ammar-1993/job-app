@@ -151,6 +151,118 @@ The resume content is: {$rawText}"
     }
 
 
+    /**
+     * توليد خطاب تغطية ونقاط بيع مخصصة لوظيفة محددة.
+     *
+     * تأخذ هذه الدالة نفس المدخلات التي تأخذها analyzeResume() وتُنتج:
+     *   - cover_letter: خطاب تغطية جاهز للإرسال، مخصص للوظيفة والمرشح
+     *   - key_selling_points: مصفوفة من 3-5 نقاط قوة مختارة ذكياً
+     *   - suggested_subject_line: سطر موضوع مقترح للإيميل
+     *
+     * @param  mixed $jobVacancy  كائن يحتوي على title/description/location/type/salary
+     * @param  array $resumeData  مصفوفة من extractResumeInformation() أو ما يعادلها
+     * @return array{cover_letter: string, key_selling_points: array, suggested_subject_line: string}
+     */
+    public function generateTailoredApplication($jobVacancy, array $resumeData): array
+    {
+        $fallback = [
+            'cover_letter'          => '',
+            'key_selling_points'    => [],
+            'suggested_subject_line' => '',
+        ];
+
+        try {
+            $jobDetails = json_encode([
+                'job_title'       => $jobVacancy->title,
+                'job_description' => $jobVacancy->description,
+                'job_location'    => $jobVacancy->location,
+                'job_type'        => $jobVacancy->type,
+                'job_salary'      => $jobVacancy->salary,
+            ], JSON_UNESCAPED_UNICODE);
+
+            // نُقلّص الـ resume data لتجنب تجاوز حد الـ tokens
+            $resumeSummary = json_encode([
+                'summary'    => $resumeData['summary']    ?? '',
+                'skills'     => $resumeData['skills']     ?? [],
+                'experience' => array_slice($resumeData['experience'] ?? [], 0, 4),
+                'education'  => $resumeData['education']  ?? [],
+            ], JSON_UNESCAPED_UNICODE);
+
+            $candidateName = $resumeData['name'] ?? 'Ammar Al-Najjar';
+
+            $response = $this->callOpenAiWithRetriesAndFallback([
+                'messages' => [
+                    [
+                        'role'    => 'system',
+                        'content' => "You are an expert career coach and technical recruiter who writes highly
+personalized, compelling job application materials for software engineers.
+Your cover letters:
+- Open with a strong, specific hook tied to the company/role (NOT generic openers like 'I am writing to apply')
+- Highlight 2-3 concrete projects or achievements that directly map to the job requirements
+- Use the STAR format subtly (Situation, Task, Action, Result) for key points
+- Sound human, confident, and enthusiastic — never robotic or desperate
+- Are appropriately concise (3-4 paragraphs, ~250-350 words)
+- Close with a clear, confident call to action
+
+Output MUST be valid JSON with exactly these keys:
+  'cover_letter': string (the full cover letter text, plain text with paragraph breaks using \\n\\n)
+  'key_selling_points': array of 3-5 strings (each a concise bullet point strength)
+  'suggested_subject_line': string (for the application email)"
+                    ],
+                    [
+                        'role'    => 'user',
+                        'content' => "Write a tailored job application package for the following:
+
+CANDIDATE NAME: {$candidateName}
+
+JOB DETAILS:
+{$jobDetails}
+
+CANDIDATE RESUME DATA:
+{$resumeSummary}
+
+Requirements:
+- The cover letter must reference specific skills/projects from the resume that match the job description
+- Key selling points should be 3-5 of the candidate's strongest matches for THIS specific job
+- The subject line should include the job title and a differentiator
+- Write everything in ENGLISH"
+                    ],
+                ],
+                'response_format' => ['type' => 'json_object'],
+                'temperature'     => 0.6, // أعلى قليلاً من التحليل لخطاب أكثر طبيعية وإنسانية
+            ], ['gpt-4o', 'gpt-4', 'gpt-3.5-turbo']);
+
+            $result       = $response->choices[0]->message->content;
+            $parsedResult = $this->extractFirstJson($result);
+
+            if ($parsedResult === null) {
+                Log::error('generateTailoredApplication: Failed to parse OpenAI JSON response');
+                return $fallback;
+            }
+
+            $requiredKeys = ['cover_letter', 'key_selling_points', 'suggested_subject_line'];
+            foreach ($requiredKeys as $key) {
+                if (! isset($parsedResult[$key])) {
+                    Log::error("generateTailoredApplication: Missing key '{$key}' in response");
+                    return $fallback;
+                }
+            }
+
+            Log::info('generateTailoredApplication: Successfully generated application for job: ' . $jobVacancy->title);
+
+            return [
+                'cover_letter'           => trim($parsedResult['cover_letter']),
+                'key_selling_points'     => (array) $parsedResult['key_selling_points'],
+                'suggested_subject_line' => trim($parsedResult['suggested_subject_line']),
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('generateTailoredApplication: Error — ' . $e->getMessage());
+            return $fallback;
+        }
+    }
+
+
     public function generateEmbedding(string $text): array
     {
         try {
