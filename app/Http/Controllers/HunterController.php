@@ -53,8 +53,15 @@ class HunterController extends Controller
 
         $query->latest('job_vacancies.imported_at');
 
-        // Fetch all for match calculation, then paginate manually
-        $allJobs = $query->get();
+        // Fetch all for match calculation, then filter strictly for technical & eligible jobs
+        $allJobs = $query->get()->filter(function ($job) {
+            $check = \App\Support\JobFilter::isEligible(
+                $job->title ?? '',
+                $job->description ?? '',
+                $job->location ?? ''
+            );
+            return $check['eligible'];
+        })->values();
 
         // Find which jobs have an existing hunter application from this user
         $jobIds = $allJobs->pluck('id')->toArray();
@@ -150,13 +157,13 @@ class HunterController extends Controller
             ['path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath(), 'query' => $request->query()]
         );
 
-        // Stats
-        $totalImported   = JobVacancy::whereNotNull('source_platform')->count();
+        // Stats (computed from eligible technical jobs)
+        $totalImported   = $allJobs->count();
         $totalApplied    = JobApplication::where('userId', $user->id)->where('is_personal', true)->count();
-        $totalGreenhouse = JobVacancy::where('source_platform', 'greenhouse')->count();
-        $totalWwr        = JobVacancy::where('source_platform', 'weworkremotely')->count();
-        $totalAdzuna     = JobVacancy::where('source_platform', 'adzuna')->count();
-        $totalRemotive   = JobVacancy::where('source_platform', 'remotive')->count();
+        $totalGreenhouse = $allJobs->where('source_platform', 'greenhouse')->count();
+        $totalWwr        = $allJobs->where('source_platform', 'weworkremotely')->count();
+        $totalAdzuna     = $allJobs->where('source_platform', 'adzuna')->count();
+        $totalRemotive   = $allJobs->where('source_platform', 'remotive')->count();
 
         // User skills for display
         $userSkills = $latestResume ? ($latestResume->skills ?? []) : [];
