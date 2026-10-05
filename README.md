@@ -1,18 +1,19 @@
-# Job Vacancies Platform (Job App) Frontend
+# Job Vacancies Platform — Job App & Autonomous AI Job Hunter
 
 <div align="center">
 
 ![Job Application Platform Interface](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-1.webp)
 
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)](https://alpinejs.dev)
+[![OpenAI](https://img.shields.io/badge/OpenAI-Vector_Embeddings_%26_GPT--4o-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com)
+[![FrankenPHP](https://img.shields.io/badge/FrankenPHP-Caddy_Engine-00ADD8?style=for-the-badge&logo=caddy&logoColor=white)](https://frankenphp.dev)
 
 </div>
 
-
-- [Live Demo](https://hireme-platform.online/)
+- **Live Production URL**: [hireme-platform.online](https://hireme-platform.online/)
 
 ---
 
@@ -20,229 +21,219 @@
 
 - [Introduction](#-introduction)
 - [Key Features](#-key-features)
+- [Autonomous AI Job Hunter (`/hunter`)](#-autonomous-ai-job-hunter-hunter)
+- [Hybrid Matching Engine](#-hybrid-matching-engine)
+- [Developer CLI Commands](#-developer-cli-commands)
 - [Project Interfaces](#-project-interfaces)
-- [Project Structure](#-project-structure)
+- [Architecture & Directory Structure](#-architecture--directory-structure)
 - [System Requirements](#-system-requirements)
-- [Installation & Setup](#-installation--setup)
+- [Installation & Local Setup](#-installation--local-setup)
+- [Automated CI/CD Deployment](#-automated-cicd-deployment)
 - [Technologies Used](#-technologies-used)
 - [Contribution](#-contribution)
-- [Common Issues](#-common-issues)
-- [Support](#-support)
+- [Support & Security](#-support--security)
 
 ---
 
 ## 🚀 Introduction
 
-**Job App** is the public-facing portal of the Job Vacancies Platform, designed to provide a seamless and modern experience for job seekers. It simplifies the process of finding and applying for jobs while leveraging AI for smarter application processing.
-
-The system is built to provide:
-- **Simplicity**: A clean, distraction-free interface for browsing jobs.
-- **Speed**: Optimized performance for quick searches and applications.
-- **Intelligence**: Integrated AI tools for resume parsing and analysis.
+**Job App** is the candidate portal and personal career automation engine of the **Job Vacancies Platform**. It combines an intuitive public job marketplace with an **Autonomous AI Job Hunter agent** that continuously analyzes external job openings, evaluates candidate-job fit using vector embeddings, and generates hyper-personalized application materials with a single click.
 
 ---
 
 ## ✨ Key Features
 
-This platform offers a user-centric set of tools for candidates:
+### 🧑‍💼 1. Candidate Portal & Job Marketplace
+- **Smart Vacancy Discovery**: Filter jobs by category, location, and workplace mode (Remote, Hybrid, On-site).
+- **Automated Resume Parsing**: Extracts structured skills, experience, and education from PDF resumes using AI.
+- **Dynamic Application Workflow**: Guided multi-step application submission with immediate feedback.
+- **My Applications Dashboard**: Real-time status tracking for all submitted job applications.
 
-### 🧑‍💼 Candidate Experience
-- **Smart Job Search**: Filter vacancies by category, location, and type.
-- **Seamless Application**: Easy-to-use form for submitting applications.
-- **Resume Parsing**: Automatically extracts details from PDF resumes using AI.
-- **Responsive Design**: Fully functional on mobile and desktop devices.
-- **Multilingual Support**: Ready for localization to reach a wider audience.
+### 🎯 2. Autonomous AI Job Hunter (`/hunter`)
+- **Direct Feed of Ingested Global & Gulf Roles**: Browses jobs aggregated from Greenhouse boards and WeWorkRemotely.
+- **Circular SVG Match Gauge**: Visual real-time indicator of candidate-to-job compatibility (0% - 100%).
+- **One-Click Tailored AI Application Generation**: Produces a customized Cover Letter, Key Selling Points, and Email Subject Line tailored specifically to the job description and candidate resume.
+- **Idempotent Storage**: Generated applications are saved immediately as `is_personal = true` drafts in the database, avoiding redundant OpenAI API calls.
+- **Interactive Copy Modal**: One-click clipboard copy for cover letters and direct external application URLs.
+
+---
+
+## 🧠 Hybrid Matching Engine
+
+The matching score is computed through `SkillMatcher` via a multi-dimensional formula:
+
+$$\text{Composite Score} = (0.70 \times \text{Cosine Similarity}) + (0.30 \times \text{Keyword Overlap}) - \text{Seniority Penalty} - \text{Stack Penalty}$$
+
+1. **Semantic Vector Similarity (70%)**: Vector embeddings generated via OpenAI (`text-embedding-3-small`) measuring conceptual and contextual fit.
+2. **Strict Skill Keyword Matching (30%)**: Word-boundary matching across core languages, frameworks, and technical toolsets.
+3. **Experience & Seniority Calibration**: Detects Junior, Mid, Senior, and Lead expectations, flagging gaps or overqualification.
+4. **Stack Incompatibility Gate**: Detects and penalizes fundamental technology stack mismatches (e.g., C++ embedded, legacy Java, mobile-only requirements).
+
+---
+
+## 💻 Developer CLI Commands
+
+Manage the autonomous job hunter and AI matching directly from the command line:
+
+```bash
+# 1. Match a candidate resume against a job vacancy and view AI output
+php artisan job:match {job_id} {resume_id}
+
+# 2. Match, generate materials, and save directly to the Hunter pipeline
+php artisan job:match {job_id} {resume_id} --save --channel=LinkedIn --notes="High priority target"
+
+# 3. List all personal job hunter applications and follow-up timelines
+php artisan hunter:list
+
+# 4. Update application status, append interview logs, and set next follow-up
+php artisan hunter:status {application_id} interviewing --notes="Screening interview scheduled with Hiring Manager" --follow-up="2026-10-15"
+```
 
 ---
 
 ## 🖼 Project Interfaces
 
-The interface is designed with a focus on **accessibility** and **modern aesthetics**.
+The user interface is designed using **Tailwind CSS** and **Alpine.js** with full Dark Mode support and responsive layouts:
 
-### 1. The Gateway to Opportunities
-**Landing Page**  
-A visually striking and clean entry point that invites users to explore their career potential. It features a bold "Find your Dream Job" headline and intuitive navigation, setting a professional tone from the first interaction.  
-![Landing Page](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-1.webp)
-
-### 2. Seamless Onboarding
-**Login & Registration**  
-Minimalist, distraction-free forms for user entry. The design focuses on ease of use with clearly labeled fields for account creation and secure login, ensuring a smooth onboarding experience for new candidates.  
-<div align="center">
-  <img src="https://ammar-1993.github.io/portfolio/images/portfolio/job-app-3.webp" width="48%" alt="Login Page">
-  <img src="https://ammar-1993.github.io/portfolio/images/portfolio/job-app-2.webp" width="48%" alt="Register Page">
-</div>
-
-### 3. Personal Control Center
-**Candidate Dashboard**  
-A robust hub for job seekers to manage their activities. It provides an immediate overview of total jobs, saved positions, and application status, all presented through elegant summary cards and a searchable job list.  
-![Candidate Dashboard](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-4.webp)
-
-### 4. Deep Dive into Opportunities
-**Job Vacancy Details**  
-A dedicated page providing comprehensive information about a position. It features a clean layout with salary details, company info, and requirements, helping candidates make informed decisions.  
-![Job Details](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-5.webp)
-
-### 5. Streamlined Application Process
-**Apply, Review, Success**  
-The application flow is broken down into intuitive steps. Starting with a clear form for personal details and resume upload, followed by a review state, and concluding with a reassuring success message. This ensures candidates feel confident at every step.  
-<div align="center">
-  <img src="https://ammar-1993.github.io/portfolio/images/portfolio/job-app-6.webp" width="32%" alt="Application Step 1">
-  <img src="./docs/assets/07_application_filled.png" width="32%" alt="Application Step 2">
-  <img src="https://ammar-1993.github.io/portfolio/images/portfolio/job-app-7.webp" width="32%" alt="Success Message">
-</div>
-
-### 6. Activity Tracking
-**My Applications**  
-A dedicated view for candidates to track the status of their submitted applications. The clear table layout allows for quick status checks (e.g., Pending, Interview) and reviewing past submissions.  
-![My Applications](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-8.webp)
-
-### 7. User Management
-**Profile Settings**  
-A secure area for users to update their personal information and credentials. The clean form design ensures that maintaining profile accuracy is quick and hassle-free.  
-![User Profile](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-9.webp)
+| Interface | Description | Preview |
+| :--- | :--- | :--- |
+| **Landing Page** | High-conversion entry point with prominent search and categories | ![Landing Page](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-1.webp) |
+| **Job Hunter Hub** | Dedicated candidate review dashboard with circular match gauges | `/hunter` |
+| **Candidate Dashboard** | Unified dashboard displaying active searches and applications | ![Dashboard](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-4.webp) |
+| **Job Details View** | Comprehensive role specifications with salary and company profiles | ![Details](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-5.webp) |
+| **Application Tracker** | Personal status board tracking review stages and feedback | ![Applications](https://ammar-1993.github.io/portfolio/images/portfolio/job-app-8.webp) |
 
 ---
 
-## 📂 Project Structure
-
-The project follows a standard scalable **Laravel** architecture:
+## 📂 Architecture & Directory Structure
 
 ```
 job-app/
 ├── app/
-│   ├── Http/Controllers/    # Request handling logic (Jobs, Applications)
-│   ├── Models/              # Eloquent models (Job, Application)
-│   └── Services/            # Business logic (ResumeParsingService)
+│   ├── Console/Commands/
+│   │   ├── MatchJobCommand.php     # CLI matching and AI application generator (job:match)
+│   │   ├── HunterListCommand.php    # CLI personal applications viewer (hunter:list)
+│   │   └── HunterStatusCommand.php  # CLI stage and notes updater (hunter:status)
+│   ├── Http/Controllers/
+│   │   ├── HunterController.php     # Job Hunter review dashboard & one-click generation
+│   │   ├── JobApplicationController.php # Candidate applications handler
+│   │   └── JobVacancyController.php # Public vacancy browsing and search
+│   ├── Models/                      # Eloquent models (extended from job-shared)
+│   ├── Observers/                   # Resume and vacancy lifecycle observers
+│   ├── Services/
+│   │   └── ResumeAnalysisService.php # AI parsing, embeddings, and tailored application generation
+│   └── Support/
+│       ├── JobFilter.php            # Negative keyword filter for roles
+│       └── SkillMatcher.php         # Hybrid matching calculation engine
 ├── resources/
-│   ├── css/                 # Tailwind CSS entry points
-│   ├── js/                  # Alpine.js logic and scripts
-│   └── views/               # Blade templates for the UI
+│   ├── css/app.css                  # Tailwind CSS styling tokens
+│   ├── js/app.js                    # Alpine.js logic
+│   └── views/
+│       ├── hunter/index.blade.php   # Autonomous Job Hunter review dashboard & modal
+│       ├── job-applications/        # Application tracking and details views
+│       └── vacancies/               # Public job catalog templates
 ├── routes/
-│   ├── web.php              # Web routes definition
-├── database/
-│   ├── migrations/          # Database schema definitions
-│   └── seeders/             # Dummy data generators
-└── public/                  # Publicly accessible assets
+│   └── web.php                      # Application routes
+├── .github/workflows/
+│   └── deploy.yml                   # Smart zero-downtime deployment workflow
+└── Dockerfile                       # Multi-stage production container with FrankenPHP
 ```
 
 ---
 
 ## 💻 System Requirements
 
-Before setting up the project, ensure your environment meets the following prerequisites:
-
-- **PHP**: >= 8.2
-- **Composer**: Latest version
+- **PHP**: >= 8.2 (extensions: `pdo_mysql`, `curl`, `mbstring`, `openssl`, `tokenizer`)
+- **Composer**: >= 2.x
 - **Node.js**: >= 18.x & **NPM**
 - **Database**: MySQL 8.0+ or MariaDB 10+
-- **Web Server**: Caddy (used in production) or Nginx/Apache (local dev)
+- **PDF Parser**: `pdftotext` (poppler-utils)
+- **OpenAI API Key**: For vector embeddings and application generation
 
 ---
 
-## ⚙️ Installation & Setup
-
-Follow these steps to get the project running locally.
+## ⚙️ Installation & Local Setup
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Ammar-1993/job-vacancies-platform.git
-cd job-vacancies-platform/job-app
+git clone https://github.com/Ammar-1993/job-app.git
+cd job-app
 ```
 
-### 2. Install Dependencies
-Install PHP and Node.js dependencies:
+### 2. Install PHP & Node Dependencies
 ```bash
 composer install
 npm install
 ```
 
-### 3. Environment Configuration
-Copy the example environment file and configure your database and API keys:
+### 3. Configure Environment
 ```bash
 cp .env.example .env
 nano .env
 ```
-*Update `DB_DATABASE`, `OPENAI_API_KEY`, and `AWS_ACCESS_KEY_ID` (if using S3).*
+Ensure the following variables are configured:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=jobs_db
+DB_USERNAME=root
+DB_PASSWORD=your_password
 
-### 4. Generate Application Key
+OPENAI_API_KEY=sk-proj-...
+```
+
+### 4. Generate Application Key & Build Assets
 ```bash
 php artisan key:generate
-```
-
-### 5. Database Setup
-Run migrations to set up the schema:
-```bash
-php artisan migrate
-```
-
-### 6. Build Assets
-Compile the frontend assets:
-```bash
 npm run build
 ```
 
-### 7. Run the Application
-Start the local development server:
+### 5. Launch the Server
 ```bash
 php artisan serve
 ```
-Visit `http://localhost:8000` in your browser.
+Visit `http://localhost:8000` (or `http://localhost:8080` if running via Docker).
+
+---
+
+## 🚀 Automated CI/CD Deployment
+
+The repository includes a modern GitHub Actions deployment pipeline ([`deploy.yml`](.github/workflows/deploy.yml)):
+
+```
+Push to main
+     │
+     ▼
+[Pre-sync job-shared] ──► Ensures shared classes are synchronized
+     │
+     ▼
+[Change Impact Check] ──► Uses git diff to inspect modified files
+     ├── Dependency/Asset Changes? ──► Rebuilds Docker container with --no-deps
+     └── PHP/Blade/Route Changes?  ──► Instant In-Place Hot Sync (< 3 seconds)
+     │
+     ▼
+[Cache Optimization]  ──► optimize:clear && optimize && queue:restart
+     │
+     ▼
+[Zero-Downtime Live]  ──► Changes active on production instantly
+```
 
 ---
 
 ## 🛠 Technologies Used
 
-We chose this stack for its **reliability**, **performance**, and **innovation**.
-
 | Technology | Purpose |
-|------------|---------|
-| **Laravel 12** | Robust PHP framework for backend logic and routing. |
-| **Tailwind CSS** | Utility-first CSS framework for rapid, custom UI design. |
-| **Alpine.js** | Lightweight JavaScript framework for interactive frontend components. |
-| **OpenAI API** | AI-powered resume parsing and analysis. |
-| **Spatie PDF-to-Text** | Efficient extraction of text from uploaded documents. |
-| **Job Shared** | Custom library used to centralize Models and Enums across the platform. |
-| **Vite** | Next-generation frontend tooling for fast builds. |
+| :--- | :--- |
+| **Laravel 12** | Core PHP enterprise backend framework. |
+| **OpenAI API** | GPT-4o application tailoring and `text-embedding-3-small` vector embeddings. |
+| **FrankenPHP / Caddy** | High-performance application server with HTTP/3 and automated HTTPS. |
+| **Tailwind CSS 3.x** | Modern styling system with Dark Mode support. |
+| **Alpine.js** | Lightweight declarative reactive framework for UI modals and interactions. |
+| **Job Shared Library** | Centralized domain logic, enums, and models. |
+| **Spatie PDF-to-Text** | Binary text extraction from uploaded resume files. |
+| **Vite** | Frontend module bundler and asset pipeline. |
 
 ---
 
-## 🤝 Contribution
-
-We welcome contributions! Please follow these steps to participate:
-
-1. **Fork** the repository.
-2. **Create a Branch** for your feature (`git checkout -b feature/AmazingFeature`).
-3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`).
-4. **Push** to the branch (`git push origin feature/AmazingFeature`).
-5. **Open a Pull Request**.
-
-Please ensure your code follows the project's coding standards (PSR-12).
-
----
-
-## ❓ Common Issues
-
-### 1. Permission Denied (Storage)
-If you encounter permission errors:
-```bash
-chmod -R 775 storage bootstrap/cache
-```
-
-### 2. Database Connection Refused
-- Ensure your database server is running.
-- Verify credentials in `.env`.
-
-### 3. Vite Manifest Not Found
-Run `npm run build` to generate the manifest file.
-
----
-
-## 💡 Feedback & Tips
-
-- **Security**: Never commit your `.env` file or expose your API keys.
-- **Performance**: Use `php artisan route:cache` and `config:cache` in production.
-- **Issues**: Report bugs via the GitHub Issues tab.
-
----
-
-<p align="center">Developed by ❤️ Engineer Ammar Al-Najjar</p>
+<p align="center">Developed with ❤️ by Eng. Ammar Al-Najjar</p>
