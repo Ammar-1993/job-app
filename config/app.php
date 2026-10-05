@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'backoffice_url' => env('BACKOFFICE_URL', str_contains((string) env('APP_URL'), 'hireme-platform.online') ? 'https://admin.hireme-platform.online' : 'http://127.0.0.1:8085'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

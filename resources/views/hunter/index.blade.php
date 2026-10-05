@@ -527,7 +527,12 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-                            <a :href="'http://127.0.0.1:8085/job-applications/' + resultData.application_id" target="_blank" 
+                            <a href="{{ route('job-applications.index') }}" target="_blank" 
+                               class="w-full sm:w-auto px-3.5 py-2 bg-white dark:bg-emerald-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-900/80 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 text-xs font-bold rounded-xl transition-all shadow-xs flex items-center justify-center">
+                                View in My Feed
+                                <svg class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            </a>
+                            <a :href="'{{ config('app.backoffice_url') }}/job-applications/' + resultData.application_id" target="_blank" 
                                class="w-full sm:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center justify-center">
                                 Open in Backoffice
                                 <svg class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
@@ -745,7 +750,12 @@
                             Apply on Source Website
                             <svg class="w-3.5 h-3.5 ml-1.5 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                         </a>
-                        <a :href="'http://127.0.0.1:8085/job-applications/' + resultData.application_id" target="_blank" 
+                        <a href="{{ route('job-applications.index') }}" target="_blank" 
+                           class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 text-xs font-bold rounded-xl transition-all">
+                            My Applications Feed
+                            <svg class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                        </a>
+                        <a :href="'{{ config('app.backoffice_url') }}/job-applications/' + resultData.application_id" target="_blank" 
                            class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 bg-brand-50 hover:bg-brand-100 dark:bg-brand-950/60 dark:hover:bg-brand-900/60 text-brand-700 dark:text-brand-300 border border-brand-200/80 dark:border-brand-800/80 text-xs font-bold rounded-xl transition-all">
                             Backoffice Pipeline
                             <svg class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
