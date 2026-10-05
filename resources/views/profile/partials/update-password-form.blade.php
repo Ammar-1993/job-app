@@ -1,15 +1,15 @@
 <section>
     <header>
-        <h2 class="text-fluid-xl font-black text-gray-900 dark:text-white uppercase tracking-wider">
-            {{ __('app.profile.update_password') }}
+        <h2 class="text-xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <span class="text-lg">🔐</span> {{ __('app.profile.update_password') }}
         </h2>
 
-        <p class="mt-2 text-fluid-sm text-gray-500 dark:text-gray-400">
+        <p class="mt-1 text-sm text-gray-500 dark:text-zinc-400">
             {{ __('app.profile.update_password_desc') }}
         </p>
     </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-fluid-6 space-y-fluid-6">
+    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-5">
         @csrf
         @method('put')
 
@@ -31,7 +31,7 @@
             <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 pt-2">
             <x-primary-button>{{ __('app.profile.save') }}</x-primary-button>
 
             @if (session('status') === 'password-updated')
@@ -39,9 +39,12 @@
                     x-data="{ show: true }"
                     x-show="show"
                     x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-400"
-                >{{ __('app.profile.saved') }}</p>
+                    x-init="setTimeout(() => show = false, 2500)"
+                    class="text-sm font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    {{ __('app.profile.saved') }}
+                </p>
             @endif
         </div>
     </form>

@@ -1,147 +1,165 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-fluid-2xl text-gray-900 dark:text-white leading-tight">
-            {{ $jobVacancy->title }}
-        </h2>
+        <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('dashboard') }}" class="w-10 h-10 flex shrink-0 items-center justify-center bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl transition-colors shadow-xs">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </a>
+                <div>
+                    <h2 class="font-extrabold text-xl sm:text-2xl text-gray-900 dark:text-white tracking-tight truncate max-w-2xl">
+                        {{ $jobVacancy->title }}
+                    </h2>
+                </div>
+            </div>
+            <a href="{{ route('job-vacancies.apply', $jobVacancy->id) }}"
+               class="hidden sm:inline-flex items-center justify-center text-sm font-bold bg-brand-600 hover:bg-brand-500 text-white rounded-xl px-6 py-2.5 shadow-sm hover:shadow-md hover:shadow-brand-500/20 transition-all duration-200 transform hover:-translate-y-0.5">
+                Apply Now
+                <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+            </a>
+        </div>
     </x-slot>
 
     @php
-        // Simulate Employer Branding by generating a consistent color based on company name
-        $companyName = $jobVacancy->company ? $jobVacancy->company->name : 'Unknown';
-        $colors = ['from-brand-500 to-indigo-600', 'from-accent-500 to-rose-600', 'from-emerald-500 to-teal-600', 'from-amber-500 to-orange-600', 'from-violet-500 to-purple-600'];
-        $hash = crc32($companyName);
-        $brandGradient = $colors[$hash % count($colors)];
+        $companyName = $jobVacancy->company ? $jobVacancy->company->name : 'Company';
         $initials = collect(explode(' ', $companyName))->map(fn($word) => strtoupper(substr($word, 0, 1)))->take(2)->join('');
     @endphp
 
-    <div class="py-fluid-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div class="py-fluid-8 bg-slate-50/60 dark:bg-zinc-950/40 transition-colors duration-300">
         <!-- Main Content Container -->
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 shadow-xl dark:shadow-3xl rounded-2xl border border-gray-200 dark:border-gray-700/50 transition-colors duration-300 overflow-hidden relative">
+            <div class="bg-white dark:bg-zinc-900 shadow-sm rounded-3xl border border-gray-200/80 dark:border-zinc-800 transition-colors duration-300 overflow-hidden relative">
 
-                <!-- Dynamic Branded Header Banner -->
-                <div class="h-32 sm:h-48 w-full bg-gradient-to-r {{ $brandGradient }} relative">
-                    <div class="absolute inset-0 bg-black/10"></div> <!-- Slight overlay -->
-                </div>
+                <!-- Subtle Ambient Banner -->
+                <div class="h-20 sm:h-24 w-full bg-gradient-to-r from-brand-500/10 via-indigo-500/10 to-transparent dark:from-brand-500/15 dark:via-indigo-500/10 dark:to-transparent border-b border-gray-100 dark:border-zinc-800/80 relative"></div>
 
-                <div class="p-6 sm:p-fluid-8 relative">
+                <div class="p-6 sm:p-8 sm:pt-4 relative">
                     <!-- Company Logo/Initials Badge overlapping the header -->
-                    <div class="absolute -top-16 sm:-top-20 left-6 sm:left-fluid-8 w-20 h-20 sm:w-24 sm:h-24 bg-white dark:bg-gray-900 rounded-2xl shadow-xl flex items-center justify-center border-4 border-white dark:border-gray-800 ring-1 ring-black/5 dark:ring-white/10 transform rotate-3 hover:rotate-0 transition-transform duration-300 z-10">
-                        <span class="text-2xl sm:text-3xl font-black bg-clip-text text-transparent bg-gradient-to-br {{ $brandGradient }}">{{ $initials }}</span>
-                    </div>
-
-                    <!-- Back Link (Pushed down slightly to account for the logo) -->
-                    <div class="mt-8 sm:mt-12 flex justify-between items-center mb-fluid-8">
-                        <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition duration-150 inline-flex items-center text-fluid-sm bg-gray-100 dark:bg-gray-700/50 px-4 py-2 rounded-xl">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                            Back to Job Listings
-                        </a>
-                    </div>
-
-                <!-- Job Header -->
-                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-gray-100 dark:border-gray-700 pb-6 mb-fluid-8">
-                    <div>
-                        <h1 class="text-fluid-3xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">{{ $jobVacancy->title }}</h1>
-
-                        <p class="text-fluid-lg text-gray-600 dark:text-gray-400 mt-2">
-                            @if($jobVacancy->company)
-                                <span class="font-bold text-gray-900 dark:text-white">{{ $jobVacancy->company->name }}</span>
-                            @endif
-                        </p>
-
-                        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-gray-500 dark:text-gray-300">
-                            <div class="flex items-center text-fluid-base">
-                                <svg class="w-4 h-4 mr-1.5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path></svg>
-                                <span class="font-medium">{{ $jobVacancy->location }}</span>
+                    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-gray-100 dark:border-zinc-800 -mt-12 sm:-mt-14 mb-8">
+                        <div class="flex items-end gap-4">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white dark:bg-zinc-800 rounded-2xl shadow-md flex items-center justify-center border-2 border-white dark:border-zinc-700 shrink-0">
+                                <span class="text-xl sm:text-2xl font-black text-brand-600 dark:text-brand-400">{{ $initials }}</span>
                             </div>
-                            <div class="flex items-center text-fluid-base">
-                                <svg class="w-4 h-4 mr-1.5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V4m0 16v-4m-6-4h12"></path></svg>
-                                <span class="font-medium">{{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'N/A') }}</span>
-                            </div>
-                            <span class="px-4 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-fluid-xs font-bold">{{ $jobVacancy->type }}</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 lg:mt-0 flex-shrink-0">
-                        <a href="{{ route('job-vacancies.apply', $jobVacancy->id) }}"
-                           class="inline-flex items-center justify-center text-fluid-base font-bold bg-gradient-to-r {{ $brandGradient }} text-white rounded-2xl px-10 py-4 shadow-xl transition duration-500 ease-in-out transform hover:scale-[1.02] active:scale-[0.98]">
-                            Apply Now
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Content Layout -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-fluid-8 mt-fluid-8">
-                    
-                    <div class="lg:col-span-2">
-                        <h2 class="text-fluid-xl font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-3 mb-6 uppercase tracking-wider">Job Description</h2>
-                        <div class="text-gray-600 dark:text-gray-300 leading-relaxed space-y-4 text-fluid-base max-w-none [&>ul]:list-disc [&>ul]:list-outside [&>ul]:pl-5 [&>ul]:mb-6 [&>ul>li]:mb-1 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>h1]:text-2xl [&>h1]:font-bold [&>h1]:mb-4 [&>h2]:text-xl [&>h2]:font-bold [&>h2]:mb-3 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:mb-2 [&_strong]:font-bold [&_strong]:text-gray-900 dark:[&_strong]:text-white">
-                            {!! Str::markdown($jobVacancy->description ?? '') !!}
-                        </div>
-                        
-                        <!-- Bottom Apply Section for long descriptions -->
-                        <div class="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 text-center lg:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div>
-                                <h3 class="text-xl font-black text-gray-900 dark:text-white">Ready to join the team?</h3>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Take the next step in your career journey.</p>
+                                <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+                                    {{ $jobVacancy->title }}
+                                </h1>
+                                <p class="text-base font-bold text-gray-700 dark:text-zinc-300 mt-1">
+                                    {{ $companyName }}
+                                </p>
                             </div>
+                        </div>
+
+                        <!-- Apply Button on Desktop -->
+                        <div class="flex-shrink-0">
                             <a href="{{ route('job-vacancies.apply', $jobVacancy->id) }}"
-                               class="w-full sm:w-auto inline-flex items-center justify-center text-fluid-base font-bold bg-gradient-to-r {{ $brandGradient }} text-white rounded-2xl px-10 py-4 shadow-xl transition duration-500 ease-in-out transform hover:scale-[1.02] active:scale-[0.98]">
+                               class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-bold bg-brand-600 hover:bg-brand-500 text-white rounded-xl px-8 py-3.5 shadow-md shadow-brand-500/25 transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95">
                                 Apply Now
-                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                             </a>
                         </div>
                     </div>
-                    
-                    <div class="lg:col-span-1">
-                        <div class="lg:sticky lg:top-8">
-                            <h2 class="text-fluid-xl font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-3 mb-6 uppercase tracking-wider">Job Overview</h2>
-                            
-                            <div class="bg-gray-50 dark:bg-gray-900/70 rounded-2xl p-6 sm:p-fluid-8 space-y-fluid-4 border border-gray-100 dark:border-gray-700/50 shadow-sm transition-colors duration-300 relative overflow-hidden w-full">
-                                <!-- Subtle brand gradient accent line -->
-                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r {{ $brandGradient }}"></div>
 
-                                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
-                                    <p class="text-fluid-xs font-bold text-gray-400 uppercase">Published Date</p>
-                                    <p class="text-gray-900 dark:text-white text-fluid-base font-medium">{{ $jobVacancy->created_at->format('M d, Y') }}</p>
+                    <!-- Metadata Pills Bar -->
+                    <div class="flex flex-wrap items-center gap-3 mb-8">
+                        <!-- Location -->
+                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 border border-gray-200/80 dark:border-zinc-700/80 shadow-xs">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path></svg>
+                            <span>{{ $jobVacancy->location }}</span>
+                        </div>
+
+                        <!-- Salary -->
+                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs">
+                            <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V4m0 16v-4m-6-4h12"></path></svg>
+                            <span>{{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'Not specified') }}</span>
+                        </div>
+
+                        <!-- Type -->
+                        <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand-50 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 border border-brand-200/80 dark:border-brand-800/60 shadow-xs">
+                            <span>💼 {{ $jobVacancy->type }}</span>
+                        </div>
+
+                        @if($jobVacancy->source_platform)
+                            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/60 shadow-xs">
+                                <span>🔗 {{ $jobVacancy->source_platform }}</span>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Content Layout -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        
+                        <!-- Main Column: Description -->
+                        <div class="lg:col-span-2">
+                            <h2 class="text-lg font-black text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-3 mb-6 tracking-tight">
+                                {{ __('Job Description') }}
+                            </h2>
+
+                            <div class="text-gray-700 dark:text-zinc-200 leading-relaxed space-y-4 text-sm sm:text-base max-w-none [&>ul]:list-disc [&>ul]:list-outside [&>ul]:pl-5 [&>ul]:mb-6 [&>ul>li]:mb-1 [&>p]:mb-4 [&>p:last-child]:mb-0 [&>h1]:text-xl [&>h1]:font-black [&>h1]:mb-4 [&>h1]:text-gray-900 dark:[&>h1]:text-white [&>h2]:text-lg [&>h2]:font-black [&>h2]:mb-3 [&>h2]:text-gray-900 dark:[&>h2]:text-white [&>h3]:text-base [&>h3]:font-bold [&>h3]:mb-2 [&>h3]:text-gray-900 dark:[&>h3]:text-white [&_strong]:font-bold [&_strong]:text-gray-900 dark:[&_strong]:text-white">
+                                {!! Str::markdown($jobVacancy->description ?? '') !!}
+                            </div>
+                            
+                            <!-- Bottom CTA -->
+                            <div class="mt-12 bg-gradient-to-br from-brand-50/80 to-indigo-50/40 dark:from-zinc-800/90 dark:to-brand-950/30 border border-brand-200/80 dark:border-zinc-700/80 p-6 sm:p-8 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div>
+                                    <h3 class="text-lg font-black text-gray-900 dark:text-white">Ready to apply for this role?</h3>
+                                    <p class="text-gray-500 dark:text-zinc-400 text-sm mt-0.5">Submit your tailored application in seconds.</p>
                                 </div>
+                                <a href="{{ route('job-vacancies.apply', $jobVacancy->id) }}"
+                                   class="w-full sm:w-auto inline-flex items-center justify-center text-sm font-bold bg-brand-600 hover:bg-brand-500 text-white rounded-xl px-8 py-3.5 shadow-md shadow-brand-500/20 transition-all duration-200 transform hover:-translate-y-0.5">
+                                    Apply Now
+                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Sidebar Column: Overview -->
+                        <div class="lg:col-span-1">
+                            <div class="lg:sticky lg:top-8">
+                                <h2 class="text-lg font-black text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-3 mb-6 tracking-tight">
+                                    {{ __('Job Overview') }}
+                                </h2>
                                 
-                                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
-                                    <p class="text-fluid-xs font-bold text-gray-400 uppercase">Company</p>
-                                    <p class="text-gray-900 dark:text-white text-fluid-base font-bold">
-                                        @if($jobVacancy->company)
-                                            {{ $jobVacancy->company->name }}
-                                        @endif
-                                    </p>
+                                <div class="bg-gray-50/80 dark:bg-zinc-800/60 rounded-2xl p-6 space-y-4 border border-gray-200/80 dark:border-zinc-700/80 shadow-xs transition-colors duration-300 w-full">
+                                    
+                                    <div class="flex justify-between items-center border-b border-gray-200/80 dark:border-zinc-700/70 pb-3">
+                                        <p class="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Published Date</p>
+                                        <p class="text-gray-900 dark:text-zinc-100 text-sm font-semibold">{{ $jobVacancy->created_at->format('M d, Y') }}</p>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center border-b border-gray-200/80 dark:border-zinc-700/70 pb-3">
+                                        <p class="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Company</p>
+                                        <p class="text-gray-900 dark:text-zinc-100 text-sm font-bold">
+                                            {{ $companyName }}
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center border-b border-gray-200/80 dark:border-zinc-700/70 pb-3">
+                                        <p class="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Location</p>
+                                        <p class="text-gray-900 dark:text-zinc-100 text-sm font-semibold">{{ $jobVacancy->location }}</p>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center border-b border-gray-200/80 dark:border-zinc-700/70 pb-3">
+                                        <p class="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Salary</p>
+                                        <p class="text-emerald-600 dark:text-emerald-400 text-sm font-black">{{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'Not specified') }}</p>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center border-b border-gray-200/80 dark:border-zinc-700/70 pb-3">
+                                        <p class="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Employment Type</p>
+                                        <p class="text-gray-900 dark:text-zinc-100 text-sm font-semibold">{{ $jobVacancy->type }}</p>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <p class="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Category</p>
+                                        <p class="text-gray-900 dark:text-zinc-100 text-sm font-semibold">
+                                            {{ $jobVacancy->jobCategory->name ?? 'Tech' }}
+                                        </p>
+                                    </div>
+                                    
                                 </div>
-                                
-                                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
-                                    <p class="text-fluid-xs font-bold text-gray-400 uppercase">Location</p>
-                                    <p class="text-gray-900 dark:text-white text-fluid-base font-medium">{{ $jobVacancy->location }}</p>
-                                </div>
-                                
-                                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
-                                    <p class="text-fluid-xs font-bold text-gray-400 uppercase">Salary</p>
-                                    <p class="text-gray-900 dark:text-white text-fluid-lg font-black">{{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'N/A') }}</p>
-                                </div>
-                                
-                                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
-                                    <p class="text-fluid-xs font-bold text-gray-400 uppercase">Employment Type</p>
-                                    <p class="text-gray-900 dark:text-white text-fluid-base font-medium">{{ $jobVacancy->type }}</p>
-                                </div>
-                                
-                                <div class="flex justify-between items-center">
-                                    <p class="text-fluid-xs font-bold text-gray-400 uppercase">Category</p>
-                                    <p class="text-gray-900 dark:text-white text-fluid-base font-medium">
-                                        {{ $jobVacancy->jobCategory->name ?? 'Uncategorized' }}
-                                    </p>
-                                </div>
-                                
                             </div>
                         </div>
                     </div>
-                </div>
+
                 </div> <!-- End Inner Content padding wrapper -->
             </div>
         </div>

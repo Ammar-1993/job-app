@@ -180,12 +180,24 @@ The resume content is: {$rawText}"
                 'job_salary'      => $jobVacancy->salary,
             ], JSON_UNESCAPED_UNICODE);
 
-            // نُقلّص الـ resume data لتجنب تجاوز حد الـ tokens
+            // نُقلّص الـ resume data لتجنب تجاوز حد الـ tokens بأمان (سواء كانت مصفوفة أو نص)
+            $experience = is_array($resumeData['experience'] ?? null)
+                ? array_slice($resumeData['experience'], 0, 4)
+                : ($resumeData['experience'] ?? '');
+
+            $skills = is_array($resumeData['skills'] ?? null)
+                ? array_slice($resumeData['skills'], 0, 25)
+                : ($resumeData['skills'] ?? '');
+
+            $education = is_array($resumeData['education'] ?? null)
+                ? array_slice($resumeData['education'], 0, 3)
+                : ($resumeData['education'] ?? '');
+
             $resumeSummary = json_encode([
                 'summary'    => $resumeData['summary']    ?? '',
-                'skills'     => $resumeData['skills']     ?? [],
-                'experience' => array_slice($resumeData['experience'] ?? [], 0, 4),
-                'education'  => $resumeData['education']  ?? [],
+                'skills'     => $skills,
+                'experience' => $experience,
+                'education'  => $education,
             ], JSON_UNESCAPED_UNICODE);
 
             $candidateName = $resumeData['name'] ?? 'Ammar Al-Najjar';

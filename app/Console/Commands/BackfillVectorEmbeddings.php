@@ -14,7 +14,7 @@ class BackfillVectorEmbeddings extends Command
      *
      * @var string
      */
-    protected $signature = 'app:backfill-embeddings';
+    protected $signature = 'app:backfill-embeddings {--force : Re-embed ALL rows (use after changing the embedding text format)} {--jobs-only : Re-embed only Job Vacancies} {--resumes-only : Re-embed only Resumes}';
 
     /**
      * The console command description.
@@ -28,11 +28,12 @@ class BackfillVectorEmbeddings extends Command
      */
     public function handle()
     {
-        $this->info('Backfilling Resumes...');
-        $resumes = Resume::whereNull('vector_embedding')->get();
-        foreach ($resumes as $resume) {
+        if (! $this->option('jobs-only')) {
+            $this->info('Backfilling Resumes...');
+            $resumes = ($this->option('force') ? Resume::query() : Resume::whereNull('vector_embedding'))->get();
+            foreach ($resumes as $resume) {
             try {
-                $textToEmbed = json_encode([
+                $textToEmbed = \App\Support\EmbeddingText::forResume([
                     'summary' => $resume->summary,
                     'skills' => $resume->skills,
                     'experience' => $resume->experience,
@@ -42,35 +43,38 @@ class BackfillVectorEmbeddings extends Command
                     'model' => 'text-embedding-3-small',
                     'input' => $textToEmbed,
                 ]);
-                $resume->update([
+                $resume->forceFill([
                     'vector_embedding' => json_encode($response->embeddings[0]->embedding)
-                ]);
+                ])->saveQuietly();
                 $this->info("Generated embedding for Resume ID: {$resume->id}");
             } catch (\Exception $e) {
                 $this->error("Failed to generate embedding for Resume ID: {$resume->id} - {$e->getMessage()}");
             }
         }
+        }
 
-        $this->info('Backfilling Job Vacancies...');
-        $jobs = JobVacancy::whereNull('vector_embedding')->get();
-        foreach ($jobs as $job) {
-            try {
-                $textToEmbed = json_encode([
-                    'title' => $job->title,
-                    'description' => $job->description,
-                    'location' => $job->location,
-                    'type' => $job->type,
-                ]);
-                $response = OpenAI::embeddings()->create([
-                    'model' => 'text-embedding-3-small',
-                    'input' => $textToEmbed,
-                ]);
-                $job->update([
-                    'vector_embedding' => json_encode($response->embeddings[0]->embedding)
-                ]);
-                $this->info("Generated embedding for JobVacancy ID: {$job->id}");
-            } catch (\Exception $e) {
-                $this->error("Failed to generate embedding for JobVacancy ID: {$job->id} - {$e->getMessage()}");
+        if (! $this->option('resumes-only')) {
+            $this->info('Backfilling Job Vacancies...');
+            $jobs = ($this->option('force') ? JobVacancy::query() : JobVacancy::whereNull('vector_embedding'))->get();
+            foreach ($jobs as $job) {
+                try {
+                    $textToEmbed = \App\Support\EmbeddingText::forJob([
+                        'title' => $job->title,
+                        'description' => $job->description,
+                        'location' => $job->location,
+                        'type' => $job->type,
+                    ]);
+                    $response = OpenAI::embeddings()->create([
+                        'model' => 'text-embedding-3-small',
+                        'input' => $textToEmbed,
+                    ]);
+                    $job->forceFill([
+                        'vector_embedding' => json_encode($response->embeddings[0]->embedding)
+                    ])->saveQuietly();
+                    $this->info("Generated embedding for JobVacancy ID: {$job->id}");
+                } catch (\Exception $e) {
+                    $this->error("Failed to generate embedding for JobVacancy ID: {$job->id} - {$e->getMessage()}");
+                }
             }
         }
 

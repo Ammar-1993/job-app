@@ -46,11 +46,17 @@ class DashboardController extends Controller
         // Get user's latest resume for match score calculation
         $latestResume = auth()->user()->resumes()->latest()->first();
 
+        $userSkills = [];
+        if ($latestResume && $latestResume->skills) {
+            $userSkills = is_string($latestResume->skills) ? json_decode($latestResume->skills, true) : $latestResume->skills;
+            if (!is_array($userSkills)) $userSkills = [];
+        }
+
         // Sorting & Match Calculation
         $sort = $request->get('sort', 'match');
         
         if ($sort === 'match') {
-            // Because we compute Cosine Similarity in PHP, we fetch all active jobs, compute score, sort, and manually paginate.
+            // Because we compute Hybrid Matching in PHP, we fetch all active jobs, compute score, sort, and manually paginate.
             $allJobs = $query->get();
             $resumeEmbedding = ($latestResume && $latestResume->vector_embedding) ? json_decode($latestResume->vector_embedding, true) : null;
 
@@ -61,14 +67,19 @@ class DashboardController extends Controller
                 ->pluck('aiGeneratedScore', 'jobVacancyId')
                 ->toArray();
 
-            $allJobs->each(function ($job) use ($resumeEmbedding, $userApplications) {
+            $allJobs->each(function ($job) use ($resumeEmbedding, $userSkills, $userApplications) {
                 if (isset($userApplications[$job->id]) && $userApplications[$job->id] !== null) {
                     $job->matchScore = (int) $userApplications[$job->id];
                 } else {
                     $jobEmbedding = $job->vector_embedding ? json_decode($job->vector_embedding, true) : null;
-                    $job->matchScore = ($resumeEmbedding && $jobEmbedding) 
-                        ? $this->calculateCosineSimilarity($resumeEmbedding, $jobEmbedding) 
-                        : 0;
+                    $hybrid = \App\Support\SkillMatcher::computeHybridScore(
+                        $resumeEmbedding,
+                        $jobEmbedding,
+                        $userSkills,
+                        $job->title ?? '',
+                        $job->description ?? ''
+                    );
+                    $job->matchScore = $hybrid['composite_score'];
                 }
             });
 
@@ -100,16 +111,21 @@ class DashboardController extends Controller
                 ->pluck('aiGeneratedScore', 'jobVacancyId')
                 ->toArray();
 
-            $jobs->getCollection()->transform(function ($job) use ($resumeEmbedding, $userApplications) {
+            $jobs->getCollection()->transform(function ($job) use ($resumeEmbedding, $userSkills, $userApplications) {
                 if (isset($userApplications[$job->id]) && $userApplications[$job->id] !== null) {
                     $job->matchScore = (int) $userApplications[$job->id];
                     return $job;
                 }
                 
                 $jobEmbedding = $job->vector_embedding ? json_decode($job->vector_embedding, true) : null;
-                $job->matchScore = ($resumeEmbedding && $jobEmbedding) 
-                    ? $this->calculateCosineSimilarity($resumeEmbedding, $jobEmbedding) 
-                    : 0;
+                $hybrid = \App\Support\SkillMatcher::computeHybridScore(
+                    $resumeEmbedding,
+                    $jobEmbedding,
+                    $userSkills,
+                    $job->title ?? '',
+                    $job->description ?? ''
+                );
+                $job->matchScore = $hybrid['composite_score'];
                 
                 return $job;
             });
@@ -121,12 +137,6 @@ class DashboardController extends Controller
         $applicationsSentCount = JobApplication::where('userId', auth()->id())->count();
         $newJobsTodayCount     = JobVacancy::whereDate('created_at', Carbon::today())->count();
         $savedJobsCount        = auth()->user()->savedJobs()->count();
-
-        $userSkills = [];
-        if ($latestResume && $latestResume->skills) {
-            $userSkills = is_string($latestResume->skills) ? json_decode($latestResume->skills, true) : $latestResume->skills;
-            if (!is_array($userSkills)) $userSkills = [];
-        }
 
         if ($request->ajax()) {
             return response()->json([

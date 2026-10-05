@@ -65,7 +65,7 @@
                 <div class="w-14 h-14 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-lg flex items-center justify-center p-2 mb-2 border border-gray-100 dark:border-gray-700/50">
                     <x-application-logo class="w-full h-full fill-current text-brand-600 dark:text-brand-400" />
                 </div>
-                <span class="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-accent-600 dark:from-brand-400 dark:to-accent-400 tracking-tight">
+                <span class="text-[22px] font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-accent-600 dark:from-brand-400 dark:to-accent-400 tracking-tight">
                     Job Vacancies
                 </span>
             </a>

@@ -12,12 +12,16 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-gray-900 dark:text-white">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-gray-900 dark:text-white flex items-center">
+                        <span class="mr-1.5">📊</span> {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('job-applications.index')" :active="request()->routeIs('job-applications')" class="text-gray-900 dark:text-white">
-                        {{ __('My Applications') }}
+                    <x-nav-link :href="route('job-applications.index')" :active="request()->routeIs('job-applications.*')" class="text-gray-900 dark:text-white flex items-center">
+                        <span class="mr-1.5">📋</span> {{ __('My Applications') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('hunter.index')" :active="request()->routeIs('hunter.*')" class="text-gray-900 dark:text-white font-black border-brand-500 text-brand-600 dark:text-brand-400 flex items-center">
+                        <span class="mr-1">🎯</span> {{ __('Job Hunter') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -82,10 +86,13 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-gray-900 dark:text-white">
-                {{ __('Dashboard') }}
+                📊 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('job-applications.index')" :active="request()->routeIs('job-applications')" class="text-gray-900 dark:text-white">
-                {{ __('My Applications') }}
+            <x-responsive-nav-link :href="route('job-applications.index')" :active="request()->routeIs('job-applications.*')" class="text-gray-900 dark:text-white">
+                📋 {{ __('My Applications') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('hunter.index')" :active="request()->routeIs('hunter.*')" class="text-gray-900 dark:text-white font-black text-brand-600 dark:text-brand-400">
+                🎯 {{ __('Job Hunter') }}
             </x-responsive-nav-link>
         </div>
 

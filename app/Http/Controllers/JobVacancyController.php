@@ -55,7 +55,7 @@ class JobVacancyController extends Controller
 
                 $extractedInfo = $this->resumeAnalysisService->extractResumeInformation($fileUrl);
 
-                $resumeTextToEmbed = json_encode([
+                $resumeTextToEmbed = \App\Support\EmbeddingText::forResume([
                     'summary' => $extractedInfo['summary'],
                     'skills' => $extractedInfo['skills'],
                     'experience' => $extractedInfo['experience'],

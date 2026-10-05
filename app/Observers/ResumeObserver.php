@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Resume;
+use App\Support\EmbeddingText;
 use Illuminate\Support\Facades\Log;
 use OpenAI\Laravel\Facades\OpenAI;
 
@@ -26,21 +27,21 @@ class ResumeObserver
         $contentChanged = $resume->wasChanged(['summary', 'skills', 'experience', 'education']);
 
         if ($contentChanged || empty($resume->vector_embedding)) {
-            $this->ensureEmbedding($resume);
+            $this->ensureEmbedding($resume, force: $contentChanged);
         }
     }
 
     /**
      * Generate and persist a vector embedding for the given resume.
      */
-    private function ensureEmbedding(Resume $resume): void
+    private function ensureEmbedding(Resume $resume, bool $force = false): void
     {
-        if (!empty($resume->vector_embedding) && strlen((string) $resume->vector_embedding) > 100) {
-            return; // Already has a valid embedding – skip.
+        if (!$force && !empty($resume->vector_embedding) && strlen((string) $resume->vector_embedding) > 100) {
+            return; // Already has a valid embedding and no force update requested – skip.
         }
 
         try {
-            $text = json_encode([
+            $text = EmbeddingText::forResume([
                 'summary'    => $resume->summary,
                 'skills'     => $resume->skills,
                 'experience' => $resume->experience,

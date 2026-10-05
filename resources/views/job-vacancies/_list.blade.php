@@ -80,7 +80,7 @@
 
                     <div class="flex-grow">
                         <a href="{{ route('job-vacancies.show', $job->id) }}"
-                            class="text-fluid-lg font-bold text-brand-600 dark:text-brand-400 group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors duration-200 flex items-center">
+                            class="text-xl font-bold text-brand-600 dark:text-brand-400 group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors duration-200 flex items-center">
                             <svg class="w-5 h-5 mr-2 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1v-3.25M17 14V9.5a4.5 4.5 0 00-9 0V14h9zM12 3v1M20 10l-1 .75M4 10l1 .75"></path></svg>
                             {{ $job->title }}
                         </a>
@@ -140,7 +140,7 @@
                 <div class="bg-gray-100 dark:bg-gray-700 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <p class="text-brand-600 dark:text-brand-400 text-fluid-xl font-black tracking-tight">{{ __('app.dashboard.no_jobs') }}</p>
+                <p class="text-brand-600 dark:text-brand-400 text-lg sm:text-xl font-black tracking-tight">{{ __('app.dashboard.no_jobs') }}</p>
                 <p class="text-gray-500 dark:text-gray-400 mt-2 text-fluid-base">{{ __('app.dashboard.no_jobs_subtitle') }}</p>
             </div>
         @endforelse

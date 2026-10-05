@@ -1,11 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-bold text-fluid-2xl text-gray-900 dark:text-white leading-tight">
-            {{ __('app.job.apply_for', ['title' => $jobVacancy->title]) }}
-        </h2>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('job-vacancies.show', $jobVacancy->id) }}" class="w-10 h-10 flex shrink-0 items-center justify-center bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl transition-colors shadow-xs">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </a>
+            <div>
+                <h2 class="font-extrabold text-xl sm:text-2xl text-gray-900 dark:text-white tracking-tight truncate max-w-2xl">
+                    {{ __('app.job.apply_for', ['title' => $jobVacancy->title]) }}
+                </h2>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-fluid-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-300" x-data="{ 
+    <div class="py-fluid-8 bg-slate-50/60 dark:bg-zinc-950/40 transition-colors duration-300" x-data="{ 
         step: 1,
         resumeData: null,
         finalResumeId: null,
@@ -81,47 +88,54 @@
     }">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <!-- Back Link -->
-            <a href="{{ route('job-vacancies.show', $jobVacancy->id) }}"
-                class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition duration-150 inline-flex items-center mb-fluid-8 text-fluid-sm"
-                x-show="step === 1">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                {{ __('app.job.back_to_details') }}
-            </a>
-            
-            <button @click="step = 1; resumeData = null;" type="button"
-                class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium transition duration-150 inline-flex items-center mb-fluid-8 text-fluid-sm"
-                x-show="step === 2" style="display: none;">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Back to Resume Selection
-            </button>
+            <!-- Back Links -->
+            <div class="mb-6">
+                <a href="{{ route('job-vacancies.show', $jobVacancy->id) }}"
+                    class="inline-flex items-center text-xs font-bold text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 px-3.5 py-1.5 rounded-xl shadow-xs transition-colors"
+                    x-show="step === 1">
+                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    {{ __('app.job.back_to_details') }}
+                </a>
+                
+                <button @click="step = 1; resumeData = null;" type="button"
+                    class="inline-flex items-center text-xs font-bold text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 px-3.5 py-1.5 rounded-xl shadow-xs transition-colors"
+                    x-show="step === 2" style="display: none;">
+                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Back to Resume Selection
+                </button>
+            </div>
 
             <!-- Application Card -->
-            <div class="bg-white dark:bg-gray-800 shadow-xl dark:shadow-3xl rounded-2xl p-fluid-8 border border-gray-200 dark:border-indigo-700/30 transition-colors duration-300">
+            <div class="bg-white dark:bg-zinc-900 shadow-sm rounded-3xl p-6 sm:p-10 border border-gray-200/80 dark:border-zinc-800 transition-colors duration-300">
 
                 <!-- Job Summary Header -->
-                <div class="border-b border-gray-100 dark:border-gray-700 pb-fluid-6 mb-fluid-8">
-                    <h1 class="text-fluid-3xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">{{ $jobVacancy->title }}</h1>
-                    <p class="text-fluid-lg text-gray-600 dark:text-gray-400 mt-2">
+                <div class="border-b border-gray-100 dark:border-zinc-800 pb-6 mb-8">
+                    <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+                        {{ $jobVacancy->title }}
+                    </h1>
+                    <p class="text-base font-bold text-gray-700 dark:text-zinc-300 mt-1">
                         @if($jobVacancy->company)
-                            <span class="font-bold text-brand-600 dark:text-brand-400">{{ $jobVacancy->company->name }}</span>
+                            <span>{{ $jobVacancy->company->name }}</span>
                         @endif
                     </p>
-                    <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-gray-500 dark:text-gray-300">
-                        <span class="text-fluid-sm flex items-center font-medium">
-                            <svg class="w-4 h-4 mr-1.5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path></svg>
+                    
+                    <div class="flex flex-wrap items-center gap-2.5 mt-4">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 border border-gray-200/80 dark:border-zinc-700/80 shadow-xs">
+                            <svg class="w-3.5 h-3.5 text-gray-500 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path></svg>
                             {{ $jobVacancy->location }}
                         </span>
-                        <span class="text-fluid-sm flex items-center font-medium">
-                            <svg class="w-4 h-4 mr-1.5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V4m0 16v-4m-6-4h12"></path></svg>
-                            {{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'N/A') }}
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs">
+                            <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V4m0 16v-4m-6-4h12"></path></svg>
+                            {{ is_numeric($jobVacancy->salary) ? '$' . number_format($jobVacancy->salary) : ($jobVacancy->salary ?: 'Not specified') }}
                         </span>
-                        <span class="px-4 py-1 bg-brand-600 text-white rounded-full text-fluid-xs font-bold shadow-md">{{ $jobVacancy->type }}</span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-brand-50 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300 border border-brand-200/80 dark:border-brand-800/60 shadow-xs">
+                            💼 {{ $jobVacancy->type }}
+                        </span>
                     </div>
                 </div>
 
                 <!-- Form -->
-                <form x-ref="form" class="space-y-fluid-10" 
+                <form x-ref="form" class="space-y-8" 
                     @submit.prevent="
                         if (!navigator.onLine) {
                             showConnectionError = true;
@@ -138,61 +152,76 @@
 
                     <!-- Connection Error Message -->
                     <div x-show="showConnectionError" x-transition 
-                        class="bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-600 text-red-700 dark:text-red-100 p-6 rounded-2xl shadow-lg" 
+                        class="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-200 p-5 rounded-2xl shadow-sm" 
                         style="display: none;">
                         <p class="font-bold mb-1">{{ __('app.job.connection_error') }}</p>
-                        <p class="text-fluid-sm">{{ __('app.job.connection_error_desc') }}</p>
+                        <p class="text-sm">{{ __('app.job.connection_error_desc') }}</p>
                     </div>
 
 
                     <!-- STEP 1: Resume Selection -->
-                    <div x-show="step === 1" x-transition:enter="transition ease-out duration-300 delay-150" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="space-y-fluid-6">
-                        <h3 class="text-fluid-xl font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 uppercase tracking-wide">{{ __('app.job.select_resume') }}</h3>
+                    <div x-show="step === 1" x-transition:enter="transition ease-out duration-300" class="space-y-6">
+                        <h3 class="text-lg font-black text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-3 tracking-tight uppercase">
+                            {{ __('app.job.select_resume') }}
+                        </h3>
 
                         <!-- Existing Resumes -->
-                        <fieldset class="space-y-fluid-4">
-                            <legend class="text-fluid-base font-bold text-gray-700 dark:text-gray-300 mb-3">{{ __('app.job.choose_existing') }}</legend>
+                        <fieldset class="space-y-4">
+                            <legend class="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider mb-3">
+                                {{ __('app.job.choose_existing') }}
+                            </legend>
+                            
                             <div class="space-y-3">
                                 @forelse($resumes as $resume)
-                                    <label class="flex items-center cursor-pointer group p-4 rounded-2xl border transition-all duration-300"
-                                        x-bind:class="selectedOption == '{{ $resume->id }}' ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-900/20 ring-1 ring-brand-500 shadow-sm' : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 hover:border-brand-300 dark:hover:border-brand-600'">
+                                    <label class="flex items-center cursor-pointer group p-4 rounded-2xl border transition-all duration-200"
+                                        x-bind:class="selectedOption == '{{ $resume->id }}' 
+                                            ? 'border-brand-500 bg-brand-50/70 dark:bg-brand-950/40 ring-2 ring-brand-500/20 shadow-xs' 
+                                            : 'border-gray-200/80 dark:border-zinc-700/80 bg-gray-50/70 dark:bg-zinc-800/50 hover:border-brand-300 dark:hover:border-zinc-600'">
                                         <input type="radio" name="resume_option" x-model="selectedOption" id="existing_{{ $resume->id }}" value="{{ $resume->id }}"
-                                            class="form-radio h-5 w-5 text-brand-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-brand-500 transition-colors" />
+                                            class="form-radio h-5 w-5 text-brand-600 bg-white dark:bg-zinc-800 border-gray-300 dark:border-zinc-600 focus:ring-brand-500" />
                                         <div class="ml-4 flex-1">
-                                            <p class="text-gray-900 dark:text-white font-bold group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{{ $resume->filename }}</p>
-                                            <p class="text-gray-500 dark:text-gray-400 text-fluid-xs">Updated: {{ $resume->updated_at->format('M d, Y') }}</p>
+                                            <p class="text-gray-900 dark:text-white font-bold group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                                                {{ $resume->filename }}
+                                            </p>
+                                            <p class="text-gray-500 dark:text-zinc-400 text-xs mt-0.5">
+                                                Updated: {{ $resume->updated_at->format('M d, Y') }}
+                                            </p>
                                         </div>
                                     </label>
                                 @empty
-                                    <p class="text-gray-500 dark:text-gray-400 text-fluid-sm p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-gray-700 italic">{{ __('app.job.no_existing_resumes') }}</p>
+                                    <p class="text-gray-500 dark:text-zinc-400 text-sm p-4 bg-gray-50 dark:bg-zinc-800/40 rounded-2xl border border-gray-200 dark:border-zinc-700 italic">
+                                        {{ __('app.job.no_existing_resumes') }}
+                                    </p>
                                 @endforelse
                             </div>
                         </fieldset>
                         
                         <!-- Divider -->
-                        <div class="relative flex justify-center py-fluid-4">
+                        <div class="relative flex justify-center py-3">
                             <div class="absolute inset-0 flex items-center">
-                                <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                                <div class="w-full border-t border-gray-200 dark:border-zinc-800"></div>
                             </div>
-                            <div class="relative flex justify-center text-fluid-xs uppercase font-black tracking-widest">
-                                <span class="px-4 bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500">{{ __('app.job.or') }}</span>
+                            <div class="relative flex justify-center text-xs uppercase font-black tracking-widest">
+                                <span class="px-4 bg-white dark:bg-zinc-900 text-gray-400 dark:text-zinc-500">{{ __('app.job.or') }}</span>
                             </div>
                         </div>
 
                         <!-- Upload New Resume -->
                         <div>
-                            <div class="flex items-center mb-fluid-4">
+                            <div class="flex items-center mb-3">
                                 <input x-ref="newResumeRadio" type="radio" name="resume_option" x-model="selectedOption" id="new_resume" value="new_resume"
-                                    class="form-radio h-5 w-5 text-brand-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:ring-brand-500" />
-                                <label class="ml-4 text-fluid-base font-bold text-gray-700 dark:text-gray-300 cursor-pointer" for="new_resume">{{ __('app.job.upload_new') }}</label>
+                                    class="form-radio h-5 w-5 text-brand-600 bg-white dark:bg-zinc-800 border-gray-300 dark:border-zinc-600 focus:ring-brand-500" />
+                                <label class="ml-3 text-sm font-bold text-gray-700 dark:text-zinc-300 cursor-pointer" for="new_resume">
+                                    {{ __('app.job.upload_new') }}
+                                </label>
                             </div>
                             
                             <label for="new_resume_file" class="block cursor-pointer">
-                                <div class="border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all duration-300 relative"
-                                    @dragover.prevent="$el.classList.add('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-900/20')"
-                                    @dragleave.prevent="$el.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-900/20')"
+                                <div class="border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition-all duration-200 relative"
+                                    @dragover.prevent="$el.classList.add('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-950/30')"
+                                    @dragleave.prevent="$el.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-950/30')"
                                     @drop.prevent="
-                                        $el.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-900/20');
+                                        $el.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-950/30');
                                         const file = $event.dataTransfer.files[0];
                                         if (file) {
                                             const input = $refs.newResumeFile;
@@ -203,9 +232,9 @@
                                         }
                                     "
                                     x-bind:class="{ 
-                                        'border-brand-500 bg-brand-50/30 dark:bg-brand-900/10 shadow-lg shadow-brand-500/10': $refs.newResumeRadio.checked && !hasError, 
-                                        'border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-600': !$refs.newResumeRadio.checked && !hasError,
-                                        'border-red-500 bg-red-50 dark:bg-red-900/10 shadow-lg shadow-red-500/10': hasError 
+                                        'border-brand-500 bg-brand-50/30 dark:bg-brand-950/20 shadow-xs': $refs.newResumeRadio.checked && !hasError, 
+                                        'border-gray-200/90 dark:border-zinc-700/80 bg-gray-50/50 dark:bg-zinc-800/30 hover:border-brand-400 dark:hover:border-zinc-600': !$refs.newResumeRadio.checked && !hasError,
+                                        'border-red-500 bg-red-50/50 dark:bg-red-950/20': hasError 
                                     }">
                                     
                                     <input x-ref="newResumeFile" @change="
@@ -234,24 +263,32 @@
                                     " 
                                         type="file" name="resume_file" id="new_resume_file" class="hidden" accept="application/pdf" />
                                     
-                                    <svg class="w-12 h-12 mx-auto mb-fluid-2 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 014 4v16a2 2 0 01-2 2H5a2 2 0 01-2-2v-5l4-4zM16 12l-4-4m4 4l-4 4m4-4h-8"></path></svg>
+                                    <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center border border-brand-100 dark:border-brand-800/60 shadow-xs">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 014 4v16a2 2 0 01-2 2H5a2 2 0 01-2-2v-5l4-4zM16 12l-4-4m4 4l-4 4m4-4h-8"></path></svg>
+                                    </div>
 
                                     <template x-if="!fileName">
                                         <div>
-                                            <p class="text-gray-600 dark:text-gray-400 font-medium">{{ __('app.job.drag_drop') }} <span class="text-brand-600 dark:text-brand-400 font-black">{{ __('app.job.browse') }}</span>.</p>
-                                            <p class="text-fluid-xs text-gray-400 dark:text-gray-500 mt-2 uppercase tracking-widest font-bold">{{ __('app.job.max_size') }}</p>
+                                            <p class="text-gray-700 dark:text-zinc-300 font-medium text-sm">
+                                                {{ __('app.job.drag_drop') }} <span class="text-brand-600 dark:text-brand-400 font-bold underline">{{ __('app.job.browse') }}</span>
+                                            </p>
+                                            <p class="text-xs text-gray-400 dark:text-zinc-500 mt-1 uppercase tracking-wider font-semibold">
+                                                {{ __('app.job.max_size') }}
+                                            </p>
                                             
-                                            <div x-show="hasError" x-transition class="mt-4 flex items-center justify-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 py-2 px-4 rounded-xl inline-flex font-bold text-sm border border-red-100 dark:border-red-800/50">
-                                                <svg class="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            <div x-show="hasError" x-transition class="mt-4 flex items-center justify-center text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 py-2 px-4 rounded-xl inline-flex font-bold text-xs border border-rose-200 dark:border-rose-800/50">
+                                                <svg class="w-4 h-4 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                                 <span x-text="errorMessage"></span>
                                             </div>
                                         </div>
                                     </template>
 
                                     <template x-if="fileName">
-                                        <div class="animate-bounce">
-                                            <p x-text="fileName" class="text-fluid-base text-brand-600 dark:text-brand-400 font-black"></p>
-                                            <p class="text-gray-500 dark:text-gray-400 text-fluid-xs mt-1 uppercase tracking-widest font-bold">{{ __('app.job.file_ready') }}</p>
+                                        <div>
+                                            <p x-text="fileName" class="text-base text-brand-600 dark:text-brand-400 font-bold"></p>
+                                            <p class="text-gray-500 dark:text-zinc-400 text-xs mt-1 uppercase tracking-wider font-semibold">
+                                                {{ __('app.job.file_ready') }}
+                                            </p>
                                         </div>
                                     </template>
                                 </div>
@@ -260,107 +297,111 @@
                     </div>
 
                     <!-- STEP 2: Resume Visualization / Preview -->
-                    <div x-show="step === 2" x-transition:enter="transition ease-out duration-500 delay-150" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;" class="space-y-fluid-8">
-                        <div class="bg-gradient-to-r from-brand-600/10 to-accent-600/10 dark:from-brand-900/30 dark:to-accent-900/30 border border-brand-200 dark:border-brand-800 rounded-3xl p-fluid-8 shadow-inner">
-                            <div class="flex items-center gap-4 mb-fluid-6">
-                                <div class="bg-brand-500 text-white p-3 rounded-2xl shadow-md">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <div x-show="step === 2" x-transition:enter="transition ease-out duration-300" style="display: none;" class="space-y-6">
+                        
+                        <!-- AI Header Banner -->
+                        <div class="bg-gradient-to-br from-brand-50/80 to-indigo-50/40 dark:from-zinc-800/90 dark:to-brand-950/40 border border-brand-200/80 dark:border-zinc-700/80 rounded-2xl p-6 shadow-xs flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-500/20 shrink-0">
+                                <span class="text-xl">⚡</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black text-gray-900 dark:text-white tracking-tight">AI Extraction Successful</h3>
+                                <p class="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">Review your parsed details before final submission.</p>
+                            </div>
+                        </div>
+                        
+                        <template x-if="resumeData">
+                            <div class="space-y-4">
+                                <!-- Summary -->
+                                <div class="bg-gray-50/80 dark:bg-zinc-800/60 rounded-2xl p-5 border border-gray-200/80 dark:border-zinc-700/80 shadow-xs">
+                                    <h4 class="text-xs font-black text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                        <span>📝</span> Professional Summary
+                                    </h4>
+                                    <p class="text-gray-700 dark:text-zinc-200 text-sm leading-relaxed" x-text="resumeData.summary || 'No summary extracted.'"></p>
                                 </div>
-                                <div>
-                                    <h3 class="text-fluid-xl font-black text-gray-900 dark:text-white">AI Extraction Successful</h3>
-                                    <p class="text-fluid-sm text-gray-600 dark:text-gray-400">Review your parsed details before final submission.</p>
+                                
+                                <!-- Skills Grid -->
+                                <div class="bg-gray-50/80 dark:bg-zinc-800/60 rounded-2xl p-5 border border-gray-200/80 dark:border-zinc-700/80 shadow-xs">
+                                    <h4 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                        <span>⚡</span> Extracted Skills
+                                    </h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        <template x-for="skill in (resumeData.skills || [])">
+                                            <span class="px-3 py-1 bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 rounded-xl text-xs font-bold border border-brand-200/70 dark:border-brand-800/60 shadow-xs cursor-default" x-text="skill"></span>
+                                        </template>
+                                        <template x-if="!(resumeData.skills && resumeData.skills.length)">
+                                            <span class="text-gray-500 italic text-xs">No skills extracted.</span>
+                                        </template>
+                                    </div>
+                                </div>
+                                
+                                <!-- Experience -->
+                                <div class="bg-gray-50/80 dark:bg-zinc-800/60 rounded-2xl p-5 border border-gray-200/80 dark:border-zinc-700/80 shadow-xs">
+                                    <h4 class="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                        <span>💼</span> Professional Experience
+                                    </h4>
+                                    <template x-if="resumeData.experience && resumeData.experience.length > 0">
+                                        <div class="space-y-4">
+                                            <template x-for="exp in resumeData.experience">
+                                                <div class="border-l-2 border-emerald-500 pl-4 py-1">
+                                                    <h5 class="font-bold text-gray-900 dark:text-white text-sm" x-text="exp.job_title"></h5>
+                                                    <p class="text-emerald-600 dark:text-emerald-400 text-xs font-semibold mt-0.5" x-text="(exp.company || '') + ' • ' + (exp.duration || '')"></p>
+                                                    <p class="text-gray-600 dark:text-zinc-300 text-xs mt-1.5 leading-relaxed whitespace-pre-wrap" x-text="exp.description"></p>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template x-if="!(resumeData.experience && resumeData.experience.length > 0)">
+                                        <p class="text-gray-500 italic text-xs">No experience details extracted.</p>
+                                    </template>
+                                </div>
+
+                                <!-- Education -->
+                                <div class="bg-gray-50/80 dark:bg-zinc-800/60 rounded-2xl p-5 border border-gray-200/80 dark:border-zinc-700/80 shadow-xs">
+                                    <h4 class="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                        <span>🎓</span> Education
+                                    </h4>
+                                    <template x-if="resumeData.education && resumeData.education.length > 0">
+                                        <div class="space-y-3">
+                                            <template x-for="edu in resumeData.education">
+                                                <div class="border-l-2 border-amber-500 pl-4 py-1">
+                                                    <h5 class="font-bold text-gray-900 dark:text-white text-sm" x-text="edu.degree"></h5>
+                                                    <p class="text-amber-600 dark:text-amber-400 text-xs font-semibold mt-0.5" x-text="(edu.institution || '') + ' • ' + (edu.graduation_year || '')"></p>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template x-if="!(resumeData.education && resumeData.education.length > 0)">
+                                        <p class="text-gray-500 italic text-xs">No education details extracted.</p>
+                                    </template>
                                 </div>
                             </div>
-                            
-                            <template x-if="resumeData">
-                                <div class="space-y-fluid-6">
-                                    <!-- Summary -->
-                                    <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
-                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Professional Summary</h4>
-                                        <div class="border-l-2 border-indigo-500 pl-4 py-1">
-                                            <p class="text-gray-800 dark:text-gray-200 text-sm leading-relaxed" x-text="resumeData.summary || 'No summary extracted.'"></p>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Skills Grid -->
-                                    <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
-                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Extracted Skills</h4>
-                                        <div class="border-l-2 border-teal-500 pl-4 py-1 flex flex-wrap gap-3">
-                                            <template x-for="skill in (resumeData.skills || [])">
-                                                <span class="px-4 py-2 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 rounded-xl text-fluid-sm font-bold border border-brand-100 dark:border-brand-800/50 shadow-sm transition-transform hover:-translate-y-1 cursor-default" x-text="skill"></span>
-                                            </template>
-                                            <template x-if="!(resumeData.skills && resumeData.skills.length)">
-                                                <span class="text-gray-500 italic text-sm">No skills extracted.</span>
-                                            </template>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Experience -->
-                                    <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
-                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Professional Experience</h4>
-                                        <template x-if="resumeData.experience && resumeData.experience.length > 0">
-                                            <div class="space-y-4">
-                                                <template x-for="exp in resumeData.experience">
-                                                    <div class="border-l-2 border-brand-500 pl-4 py-1">
-                                                        <h5 class="font-bold text-gray-900 dark:text-white" x-text="exp.job_title"></h5>
-                                                        <p class="text-brand-600 dark:text-brand-400 text-sm font-medium" x-text="(exp.company || '') + ' • ' + (exp.duration || '')"></p>
-                                                        <p class="text-gray-600 dark:text-gray-400 text-sm mt-2 leading-relaxed whitespace-pre-wrap" x-text="exp.description"></p>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </template>
-                                        <template x-if="!(resumeData.experience && resumeData.experience.length > 0)">
-                                            <p class="text-gray-500 italic text-fluid-sm">No experience details extracted.</p>
-                                        </template>
-                                    </div>
-
-                                    <!-- Education -->
-                                    <div class="bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/50">
-                                        <h4 class="text-fluid-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4">Education</h4>
-                                        <template x-if="resumeData.education && resumeData.education.length > 0">
-                                            <div class="space-y-4">
-                                                <template x-for="edu in resumeData.education">
-                                                    <div class="border-l-2 border-accent-500 pl-4 py-1">
-                                                        <h5 class="font-bold text-gray-900 dark:text-white" x-text="edu.degree"></h5>
-                                                        <p class="text-accent-600 dark:text-accent-400 text-sm font-medium" x-text="(edu.institution || '') + ' • ' + (edu.graduation_year || '')"></p>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </template>
-                                        <template x-if="!(resumeData.education && resumeData.education.length > 0)">
-                                            <p class="text-gray-500 italic text-fluid-sm">No education details extracted.</p>
-                                        </template>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
+                        </template>
                     </div>
 
 
                     <!-- Submit Buttons -->
-                    <div class="pt-8 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300 flex flex-col sm:flex-row gap-4">
+                    <div class="pt-6 border-t border-gray-100 dark:border-zinc-800 transition-colors duration-300">
                         <button type="submit" 
-                            class="w-full relative flex items-center justify-center gap-4 py-5 rounded-2xl text-fluid-lg font-black shadow-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl overflow-hidden group disabled:cursor-not-allowed disabled:transform-none"
+                            class="w-full flex items-center justify-center gap-3 py-4 rounded-xl text-base font-bold shadow-md transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95 disabled:cursor-not-allowed disabled:transform-none"
                             x-bind:disabled="isButtonDisabled"
                             x-bind:class="{ 
-                                'bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white ring-2 ring-brand-500/20 ring-offset-4 dark:ring-offset-gray-900': !isButtonDisabled, 
-                                'bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed shadow-none hover:shadow-none': isButtonDisabled 
+                                'bg-brand-600 hover:bg-brand-500 text-white shadow-brand-500/25': !isButtonDisabled, 
+                                'bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-500 border border-gray-200 dark:border-zinc-700 shadow-none hover:shadow-none': isButtonDisabled 
                             }">
-                            
-                            <div x-show="!isProcessing" class="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 group-hover:animate-shine"></div>
 
-                            <span x-show="!isProcessing && step === 1" class="flex items-center gap-3">
+                            <span x-show="!isProcessing && step === 1" class="flex items-center gap-2">
                                 Preview Application
-                                <svg class="w-6 h-6 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </span>
                             
-                            <span x-show="!isProcessing && step === 2" class="flex items-center gap-3" style="display: none;">
+                            <span x-show="!isProcessing && step === 2" class="flex items-center gap-2" style="display: none;">
                                 {{ __('app.job.submit_application') }}
-                                <svg class="w-6 h-6 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </span>
                             
-                            <span x-show="isProcessing" class="flex items-center gap-3" style="display: none;">
-                                <svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <span x-show="isProcessing" class="flex items-center gap-2" style="display: none;">
+                                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
@@ -374,31 +415,31 @@
 
         </div>
 
-        <!-- Full-Screen Attractive Loading Overlay -->
-        <div x-show="isProcessing" x-transition:enter="transition ease-out duration-500"
+        <!-- Loading Overlay -->
+        <div x-show="isProcessing" x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100"
+            x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/90 dark:bg-gray-900/95 backdrop-blur-xl"
+            class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md"
             style="display: none;">
             
-            <div class="ai-loader-container mb-fluid-12">
+            <div class="ai-loader-container mb-8">
                 <div class="ai-ring"></div>
                 <div class="ai-ring"></div>
                 <div class="ai-ring"></div>
                 <div class="ai-core"></div>
             </div>
 
-            <h3 class="text-fluid-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-accent-600 dark:from-brand-400 dark:to-accent-400 animate-pulse tracking-tight">
+            <h3 class="text-xl font-black text-gray-900 dark:text-white tracking-tight">
                 <span x-text="feedbackMessage"></span>
             </h3>
             
-            <p class="mt-fluid-4 text-gray-500 dark:text-gray-400 text-fluid-lg font-medium tracking-wide uppercase">
+            <p class="mt-2 text-xs font-bold text-gray-500 dark:text-zinc-400 tracking-wider uppercase">
                 {{ __('app.job.analyzing') }}
             </p>
             
-            <div class="w-80 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full mt-fluid-8 overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-brand-600 to-accent-600 dark:from-brand-500 dark:to-accent-500 w-1/2 animate-[progress_2s_ease-in-out_infinite]"></div>
+            <div class="w-64 h-1.5 bg-gray-100 dark:bg-zinc-800 rounded-full mt-6 overflow-hidden">
+                <div class="h-full bg-brand-600 dark:bg-brand-500 w-1/2 animate-[progress_2s_ease-in-out_infinite]"></div>
             </div>
 
         </div>
