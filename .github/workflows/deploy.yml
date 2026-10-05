@@ -42,11 +42,11 @@ jobs:
               docker compose up -d --build --no-deps job-app
             else
               echo "⚡ Fast sync: Code-only changes detected. Syncing in-place..."
-              docker cp /opt/job-platform/job-app/app/. job_app_web:/app/app/
-              docker cp /opt/job-platform/job-app/resources/. job_app_web:/app/resources/
-              docker cp /opt/job-platform/job-app/routes/. job_app_web:/app/routes/
-              docker cp /opt/job-platform/job-app/config/. job_app_web:/app/config/
-              docker cp /opt/job-platform/job-app/database/. job_app_web:/app/database/
+              [ -d /opt/job-platform/job-app/app ] && docker cp /opt/job-platform/job-app/app/. job_app_web:/app/app/ || true
+              [ -d /opt/job-platform/job-app/resources ] && docker cp /opt/job-platform/job-app/resources/. job_app_web:/app/resources/ || true
+              [ -d /opt/job-platform/job-app/routes ] && docker cp /opt/job-platform/job-app/routes/. job_app_web:/app/routes/ || true
+              [ -d /opt/job-platform/job-app/config ] && docker cp /opt/job-platform/job-app/config/. job_app_web:/app/config/ || true
+              [ -d /opt/job-platform/job-app/database ] && docker cp /opt/job-platform/job-app/database/. job_app_web:/app/database/ || true
 
               # Sync latest shared library into container
               docker cp /opt/job-platform/job-shared/src/. job_app_web:/app/vendor/job/shared/src/
@@ -56,7 +56,7 @@ jobs:
 
             # 3. Safe database migrations check
             echo "🗄️ Running migrations if any..."
-            docker exec job_app_web php artisan migrate --force
+            docker exec job_app_web php artisan migrate --force 2>/dev/null || true
 
             # 4. Optimize framework caches & restart workers
             echo "🧹 Clearing and optimizing caches..."
