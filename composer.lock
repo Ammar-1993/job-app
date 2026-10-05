@@ -1209,12 +1209,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ammar-1993/job-shared.git",
-                "reference": "4385ba7e9a2cadfdc84ec9a8d2a65fdcb8b1323a"
+                "reference": "42e4e82b224107ac2a6195ec443a5fcf7703d184"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ammar-1993/job-shared/zipball/4385ba7e9a2cadfdc84ec9a8d2a65fdcb8b1323a",
-                "reference": "4385ba7e9a2cadfdc84ec9a8d2a65fdcb8b1323a",
+                "url": "https://api.github.com/repos/Ammar-1993/job-shared/zipball/42e4e82b224107ac2a6195ec443a5fcf7703d184",
+                "reference": "42e4e82b224107ac2a6195ec443a5fcf7703d184",
                 "shasum": ""
             },
             "require": {
