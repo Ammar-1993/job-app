@@ -31,6 +31,8 @@ class HunterController extends Controller
             : null;
         $candidateSkills = $latestResume ? ($latestResume->skills ?? []) : [];
 
+        $candidateExp = $latestResume ? ($latestResume->experience ?? null) : null;
+
         // Base query: only imported (external) jobs
         $query = JobVacancy::with('company')
             ->whereNotNull('source_platform')
@@ -72,7 +74,7 @@ class HunterController extends Controller
             ->keyBy('jobVacancyId');
 
         // Compute hybrid match scores + attach hunter application status, region, and skills breakdown
-        $allJobs->each(function ($job) use ($resumeEmbedding, $candidateSkills, $existingHunterApps) {
+        $allJobs->each(function ($job) use ($resumeEmbedding, $candidateSkills, $candidateExp, $existingHunterApps) {
             $jobEmbedding = $job->vector_embedding ? json_decode($job->vector_embedding, true) : null;
             
             $hybrid = \App\Support\SkillMatcher::computeHybridScore(
@@ -80,7 +82,8 @@ class HunterController extends Controller
                 $jobEmbedding,
                 $candidateSkills,
                 $job->title ?? '',
-                $job->description ?? ''
+                $job->description ?? '',
+                $candidateExp
             );
 
             $hunterApp = $existingHunterApps->get($job->id);
@@ -95,15 +98,22 @@ class HunterController extends Controller
                 $job->matchScore = $hybrid['composite_score'];
             }
 
-            $job->matchDetails   = $hybrid;
-            $job->matchedSkills  = $hybrid['matched_skills'];
-            $job->missingSkills  = $hybrid['missing_skills'];
-            $job->skillsScore    = $hybrid['skills_score'];
-            $job->vectorScore    = $hybrid['vector_score'];
-            $job->trackMismatch  = $hybrid['track_mismatch'] ?? false;
-            $job->trackDomain    = $hybrid['track_domain'] ?? null;
-            $job->trackReason    = $hybrid['track_reason'] ?? null;
-            $job->region         = $this->detectRegion($job->location ?? '', $job->title ?? '');
+            $job->matchDetails      = $hybrid;
+            $job->matchedSkills     = $hybrid['matched_skills'];
+            $job->missingSkills     = $hybrid['missing_skills'];
+            $job->skillsScore       = $hybrid['skills_score'];
+            $job->vectorScore       = $hybrid['vector_score'];
+            $job->trackMismatch     = $hybrid['track_mismatch'] ?? false;
+            $job->trackDomain       = $hybrid['track_domain'] ?? null;
+            $job->trackReason       = $hybrid['track_reason'] ?? null;
+            $job->seniorityLevel    = $hybrid['seniority_level'] ?? null;
+            $job->seniorityLabel    = $hybrid['seniority_label'] ?? null;
+            $job->seniorityMismatch = $hybrid['seniority_mismatch'] ?? false;
+            $job->seniorityReason   = $hybrid['seniority_reason'] ?? null;
+            $job->stackMismatch     = $hybrid['stack_mismatch'] ?? false;
+            $job->stackRequired     = $hybrid['stack_required'] ?? null;
+            $job->stackReason       = $hybrid['stack_reason'] ?? null;
+            $job->region            = $this->detectRegion($job->location ?? '', $job->title ?? '');
         });
 
         // Regional counts (computed across all imported jobs matching text search/platform)
@@ -222,13 +232,15 @@ class HunterController extends Controller
         $jobEmbedding = $jobVacancy->vector_embedding ? json_decode($jobVacancy->vector_embedding, true) : null;
         $resumeEmbedding = $resume->vector_embedding ? json_decode($resume->vector_embedding, true) : null;
         $candidateSkills = $resume->skills ?? [];
+        $candidateExp    = $resume->experience ?? null;
 
         $hybrid = \App\Support\SkillMatcher::computeHybridScore(
             $resumeEmbedding,
             $jobEmbedding,
             $candidateSkills,
             $jobVacancy->title ?? '',
-            $jobVacancy->description ?? ''
+            $jobVacancy->description ?? '',
+            $candidateExp
         );
 
         // Check if a hunter application already exists for this job

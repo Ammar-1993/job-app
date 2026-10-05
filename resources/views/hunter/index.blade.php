@@ -238,6 +238,11 @@
                                     <span class="mr-1.5 text-sm">{{ $job->region['flag'] }}</span> {{ $job->region['label'] }}
                                 </span>
                             @endif
+                            @if(!empty($job->seniorityLabel))
+                                <span class="bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60 px-2.5 py-1 rounded-xl text-xs font-bold flex items-center">
+                                    {{ $job->seniorityLabel }}
+                                </span>
+                            @endif
                             @if($job->type)
                                 <span class="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 border border-gray-200/60 dark:border-zinc-700/60 px-2.5 py-1 rounded-xl text-xs font-bold uppercase tracking-wider">{{ $job->type }}</span>
                             @endif
@@ -272,6 +277,10 @@
                                 </div>
                                 @if($job->isAudited)
                                     <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-md border border-indigo-200/60 dark:border-indigo-800/60 uppercase tracking-wider hidden sm:inline">🎯 Audited Score</span>
+                                @elseif($job->stackMismatch ?? false)
+                                    <span class="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-md border border-rose-200/60 dark:border-rose-800/60 uppercase tracking-wider hidden sm:inline">⚡ Stack Mismatch</span>
+                                @elseif($job->seniorityMismatch ?? false)
+                                    <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60 uppercase tracking-wider hidden sm:inline">⏳ Seniority Mismatch</span>
                                 @elseif($job->trackMismatch ?? false)
                                     <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60 uppercase tracking-wider hidden sm:inline">⚠️ Track Mismatch</span>
                                 @else
@@ -301,10 +310,13 @@
                                 @endif
                             </div>
 
-                            @if(($job->trackMismatch ?? false) && !empty($job->trackReason))
+                            @php
+                                $warningReason = ($job->stackMismatch ?? false) ? $job->stackReason : (($job->seniorityMismatch ?? false) ? $job->seniorityReason : (($job->trackMismatch ?? false) ? $job->trackReason : null));
+                            @endphp
+                            @if(!empty($warningReason))
                                 <div class="mt-2 text-[11px] text-amber-700 dark:text-amber-400/90 bg-amber-50/80 dark:bg-amber-950/30 px-2.5 py-1 rounded-lg border border-amber-200/50 dark:border-amber-900/50 flex items-center gap-1.5">
                                     <svg class="w-3.5 h-3.5 shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                                    <span class="font-medium">{{ $job->trackReason }}</span>
+                                    <span class="font-medium">{{ $warningReason }}</span>
                                 </div>
                             @endif
                         </div>
